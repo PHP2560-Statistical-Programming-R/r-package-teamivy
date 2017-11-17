@@ -14,8 +14,8 @@ Our output would be an R markdown file that shows
 
 •             Middle ground
 
-•             Wait time (might delete?)
+•             Wait time
 
-•             Discounts/promotions (might delete?)
+•             Discounts/promotions
 
 We will all take a portion of web scraping and a portion of writing functions.
