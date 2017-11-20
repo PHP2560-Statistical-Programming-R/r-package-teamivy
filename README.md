@@ -18,4 +18,20 @@ Our output would be an R markdown file that shows
 
 •             Discounts/promotions
 
-We will all take a portion of web scraping and a portion of writing functions.
+#The way we will divide work is:
+* We will all take a portion of web scraping from sites including:
+    - google flights
+    - Expedia.com
+    - Amtrak
+    - Uber
+    - Kayak
+    - Greyhound and Peter Pan bus lines
+    - Other transportation services and data bases.
+    
+* and a portion of writing functions.
+  - One to calculate an efficiency score
+  - One to visualize time of travel
+  - One to present a table of all the possible options
+  - More ideas to come...
+
+
