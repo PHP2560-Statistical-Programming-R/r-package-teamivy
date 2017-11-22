@@ -1,37 +1,23 @@
 # r-package-teamivy
 
-Our idea is to compare prices between transportation methods
+#For our R package we will be creating a NBA basketball team analysis package.
 
-•             Flights, buses, and trains
+##We will webscrap from the following website: Basketball ##Reference,https://www.basketball-reference.com/ 
 
-Our output would be an R markdown file that shows
+#There are 6 divisions, 30 teams total
 
-•             The most efficient option
+#We will webscrape from the last 10 years from all 30 teams
 
-•             The cheapest option
-
-•             The fastest option
-
-•             Middle ground
-
-•             Wait time
-
-•             Discounts/promotions
-
-#The way we will divide work is:
-* We will all take a portion of web scraping from sites including:
-    - google flights
-    - Expedia.com
-    - Amtrak
-    - Uber
-    - Kayak
-    - Greyhound and Peter Pan bus lines
-    - Other transportation services and data bases.
-    
-* and a portion of writing functions.
-  - One to calculate an efficiency score
-  - One to visualize time of travel
-  - One to present a table of all the possible options
-  - More ideas to come...
+#Tables will we be scrapping from are:
+##All tables from each individual team pages
+##Team payroll page
+##Team schedule
+##Team results page
 
 
+##Questions for analysis:
+##1)How payroll equates to winning percentage
+##2)How injuries relate to change in winning percentage
+##3)How do team statsitics change from the regular seasons to the post season
+##4)Gambeling odds as the season progresses
+##5) Stepwise time periods demonstrating changes in team stats
