@@ -1,0 +1,47 @@
+---
+title: "Yam Package File"
+author: "Derrick Yam"
+date: "November 29, 2017"
+output: html_document
+---
+
+##Load Libraries
+```{r}
+library(rvest)
+library(dplyr)
+library(pipeR)
+library(knitr)
+
+```
+
+
+##Reference website help from http://asbcllc.com/blog/2014/november/creating_bref_scraper/
+
+```{r}
+url <- 'https://www.basketball-reference.com/friv/injuries.fcgi' 
+css_page <- '#injuries' 
+
+Injuries <- url %>>%
+    read_html %>>%
+    html_nodes(css_page) %>>%
+    html_table(header = T) %>>%
+    data.frame() %>>%
+    tbl_df()
+
+```
+
+##Pull Roster Data
+```{r}
+url <- 'https://www.basketball-reference.com/teams/BOS/2018.html' 
+css_page <- '#roster' 
+
+Team <- url %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+
+```
+
+
