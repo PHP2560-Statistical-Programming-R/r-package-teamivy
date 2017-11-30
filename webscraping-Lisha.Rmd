@@ -1,0 +1,47 @@
+---
+title: "NBA-Lisha"
+output: html_document
+---
+
+#Webscrape data
+```{r}
+http1 <- 'https://www.basketball-reference.com/teams/'
+http2 <- 'https://www.basketball-reference.com/leagues/'
+http3 <- 'https://www.basketball-reference.com/playoffs/'
+create_url<-function(choice){
+  if(choice=='team'){
+    url<<-paste(http1,a,"/",year,".html",sep="")
+  }else if(choice=='league'){
+    url<<-http2
+  }else{
+    url<<-http3
+  }
+  return(url)
+}
+
+webscrape_table<-function(css_page){
+  table<-url %>% 
+  read_html()%>% 
+  html_nodes(css_page) %>% 
+  html_table(header = T) %>%
+  data.frame() %>%
+  tbl_df()
+  return(table)
+}
+webscrape_table("#stats")
+
+scrape_table <- function(team,year,css_page){
+  a<-substitute(team)
+  a<-as.character(a)
+  table<-url %>% 
+    read_html()%>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+  return(table)
+}
+scrape_table(GSW,2017,"#roster")
+
+```
+
