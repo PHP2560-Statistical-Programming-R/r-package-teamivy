@@ -13,7 +13,6 @@ library(pipeR)
 library(knitr)
 library(xml2)
 library(htmltab)
-library(dplyr)
 ```
 
 ##Advanced PBP
@@ -29,4 +28,51 @@ AdvancedPBP <- AdvancedPBP %>%
 
 ```
 
-##
+##Salary
+```{r}
+Salary <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_salaries2")
+
+head(Salary)
+
+Salary <- Salary %>% 
+  mutate(Team = "BOS") %>% 
+  rename(Player = V1) %>% 
+  dplyr::select(-Rk)
+
+head(Salary)
+```
+
+##Betting Odds
+Historical Data from https://www.indatabet.com/free.html
+
+##Look into live webscraping
+
+```{r}
+url <- "https://www.pinnacle.com/en/odds/match/basketball/usa/nba?sport=True"
+url <- "https://www.sportsbookreview.com/betting-odds/nba-basketball/"
+xpath <- '//*[@id="tournamentTable"]'
+//*[@id="left-content"]/div/div[2]/div[2]/div/div[2]
+//*[@id="left-content"]/div/div[2]/div[2]/div/div[2]/div[3]/div[2]/div/table
+
+
+bettingtable <- read_html(url) 
+
+%>%
+  html_nodes(xpath = '//*[@id="sport-5"]/div/div[1]/div') %>% 
+  html_table(header = F) %>% 
+  data.frame() %>% 
+  tbl_df()
+  
+  url %>>%
+    read_html %>>%
+    html_nodes(css_page) %>>%
+    html_table(header = F) %>>%
+    data.frame() %>>%
+    tbl_df() -> total_table
+head(total_table)
+
+
+```
+
+
+
