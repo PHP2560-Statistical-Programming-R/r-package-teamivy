@@ -11,37 +11,19 @@ library(rvest)
 library(dplyr)
 library(pipeR)
 library(knitr)
-
+library(xml2)
+library(htmltab)
+library(dplyr)
 ```
-
-
-##Reference website help from http://asbcllc.com/blog/2014/november/creating_bref_scraper/
 
 ```{r}
-url <- 'https://www.basketball-reference.com/friv/injuries.fcgi' 
-css_page <- '#injuries' 
+AdvancedPBP <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced")
 
-Injuries <- url %>>%
-    read_html %>>%
-    html_nodes(css_page) %>>%
-    html_table(header = T) %>>%
-    data.frame() %>>%
-    tbl_df()
+head(AdvancedPBP)
 
-```
-
-##Pull Roster Data
-```{r}
-url <- 'https://www.basketball-reference.com/teams/BOS/2018.html' 
-css_page <- '#roster' 
-
-Team <- url %>% 
-    read_html %>% 
-    html_nodes(css_page) %>% 
-    html_table(header = T) %>%
-    data.frame() %>%
-    tbl_df()
+AdvancedPBP <- AdvancedPBP %>% 
+  mutate(Team = "BOS") %>% 
+  rename(Player = V1) %>% 
+  dplyr::select(-Rk)
 
 ```
-
-
