@@ -3,23 +3,26 @@ title: "NBA-Lisha"
 output: html_document
 ---
 
+#Load Libraries
+```{r}
+library(rvest)
+library(dplyr)
+library(pipeR)
+library(knitr)
+
+```
+
 #Webscrape data
 ```{r}
 http1 <- 'https://www.basketball-reference.com/teams/'
-http2 <- 'https://www.basketball-reference.com/leagues/'
+http2 <- 'https://www.basketball-reference.com/leagues/NBA_2017_'
 http3 <- 'https://www.basketball-reference.com/playoffs/'
-create_url<-function(choice){
-  if(choice=='team'){
-    url<<-paste(http1,a,"/",year,".html",sep="")
-  }else if(choice=='league'){
-    url<<-http2
-  }else{
-    url<<-http3
-  }
-  return(url)
-}
 
-webscrape_table<-function(css_page){
+#Webscrape schedule according to month
+webscrape_schedule<-function(month,css_page){
+  a<-substitute(month)
+  a<-as.character(a)
+  url<-paste(http2,'games-',a,'.html',sep="")
   table<-url %>% 
   read_html()%>% 
   html_nodes(css_page) %>% 
@@ -28,11 +31,46 @@ webscrape_table<-function(css_page){
   tbl_df()
   return(table)
 }
-webscrape_table("#stats")
 
-scrape_table <- function(team,year,css_page){
+schedule<-webscrape_schedule(december,"#schedule")
+
+#webscape standings for east or west conference
+webscrape_standings<-function(css_page){
+  url<-paste(http2,'standings.html',sep="")
+  print(url)
+  table<-url %>% 
+  read_html()%>% 
+  html_nodes(css_page) %>% 
+  html_table(header = T) %>%
+  data.frame() %>%
+  tbl_df()
+  return(table)
+}
+
+standings_west<-webscrape_standings("#confs_standings_W")
+standings_east<-webscrape_standings("#confs_standings_E")
+
+#webscrape playoffs summary for specified year 
+webscrape_playoffs<-function(year,css_page){
+  url<-paste(http3,'NBA_',year,'.html',sep = "")
+  print(url)
+  table<-url %>% 
+  read_html()%>% 
+  html_nodes(css_page) %>% 
+  html_table(header = T) %>%
+  data.frame() %>%
+  tbl_df()
+  return(table)
+}
+
+OPGS_2017<-webscrape_playoffs(2017,"#team-stats-per_game")
+#I can't pull opponents stats, always 0 variable?????
+
+#websrape stats for each team and year
+webscrape_team <- function(team,year,css_page){
   a<-substitute(team)
   a<-as.character(a)
+  url<-paste(http1,a,"/",year,".html",sep="")
   table<-url %>% 
     read_html()%>% 
     html_nodes(css_page) %>% 
@@ -41,7 +79,8 @@ scrape_table <- function(team,year,css_page){
     tbl_df()
   return(table)
 }
-scrape_table(GSW,2017,"#roster")
+
+GSW_2017<-webscrape_team(GSW,2017,"#roster")
 
 ```
 
