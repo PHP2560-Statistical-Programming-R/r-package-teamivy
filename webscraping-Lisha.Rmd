@@ -9,7 +9,7 @@ library(rvest)
 library(dplyr)
 library(pipeR)
 library(knitr)
-
+library(stringr)
 ```
 
 #Webscrape data
@@ -82,5 +82,11 @@ webscrape_team <- function(team,year,css_page){
 
 GSW_2017<-webscrape_team(GSW,2017,"#roster")
 
+```
+
+#clean data
+```{r}
+unicode_pattern <-"<U+00A0>"
+standings_east$Eastern.Conference<-str_replace_all(standings_east$Eastern.Conference,unicode_pattern,replacement = "")
 ```
 
