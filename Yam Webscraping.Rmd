@@ -44,35 +44,65 @@ head(Salary)
 
 ##Betting Odds
 Historical Data from https://www.indatabet.com/free.html
+Better source: http://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nbaoddsarchives.htm
 
-##Look into live webscraping
-
+##Clean and combine the historical betting odds
 ```{r}
-url <- "https://www.pinnacle.com/en/odds/match/basketball/usa/nba?sport=True"
-url <- "https://www.sportsbookreview.com/betting-odds/nba-basketball/"
-xpath <- '//*[@id="tournamentTable"]'
-//*[@id="left-content"]/div/div[2]/div[2]/div/div[2]
-//*[@id="left-content"]/div/div[2]/div[2]/div/div[2]/div[3]/div[2]/div/table
+setwd("C:/Users/dyam/Dropbox (Brown)/Brown/Statistical Programming/r-package-teamivy/Historical Betting Lines")
+library(readxl)
+NBA2018 <- readxl::read_excel("nba odds 2017-18.xlsx")
+NBA2017 <- readxl::read_excel("nba odds 2016-17.xlsx")
+NBA2016 <- readxl::read_excel("nba odds 2015-16.xlsx")
+NBA2015 <- readxl::read_excel("nba odds 2014-15.xlsx")
+NBA2014 <- readxl::read_excel("nba odds 2013-14.xlsx")
+NBA2013 <- readxl::read_excel("nba odds 2012-13.xlsx")
+NBA2012 <- readxl::read_excel("nba odds 2011-12.xlsx")
+NBA2011 <- readxl::read_excel("nba odds 2010-11.xlsx")
+NBA2010 <- readxl::read_excel("nba odds 2009-10.xlsx")
+NBA2009 <- readxl::read_excel("nba odds 2008-09.xlsx")
+NBA2008 <- readxl::read_excel("nba odds 2007-08.xlsx")
 
-
-bettingtable <- read_html(url) 
-
-%>%
-  html_nodes(xpath = '//*[@id="sport-5"]/div/div[1]/div') %>% 
-  html_table(header = F) %>% 
-  data.frame() %>% 
-  tbl_df()
-  
-  url %>>%
-    read_html %>>%
-    html_nodes(css_page) %>>%
-    html_table(header = F) %>>%
-    data.frame() %>>%
-    tbl_df() -> total_table
-head(total_table)
+#Add a year variable to each table
+#Reformat the date variable
+#Spread the two visitor home rows into one row per game
+#Create new over under variable
+#Create new spread variable
 
 
 ```
 
+##Look into live webscraping
 
+```{r}
+##Spreads Tables
+url <-  "http://www.donbest.com/nba/odds/spreads/20171203.html"
+
+SpreadsTable <- url %>%
+    read_html %>%
+    html_nodes(xpath = '//*[@id="oddsHolder"]/div[1]/table') %>%
+    html_table(header = T, fill =T) %>%
+    data.frame() %>%
+    tbl_df()
+
+head(SpreadsTable)
+
+##MoneyLine Tables
+url <-  "http://www.donbest.com/nba/odds/money-lines/20171203.html"
+
+MoneyLineTable <- url %>%
+    read_html %>%
+    html_nodes(xpath = '//*[@id="oddsHolder"]/div[1]/table') %>%
+    html_table(header = T, fill =T) %>%
+    data.frame() %>%
+    tbl_df()
+
+head(SpreadsTable)
+
+```
+
+
+##Learning Javascript scraping
+From: https://www.r-bloggers.com/short-r-tutorial-scraping-javascript-generated-data-with-r/
+From: https://www.r-bloggers.com/scraping-javascript-rendered-web-content-using-r/
+From: https://www.r-bloggers.com/web-scraping-javascript-rendered-sites/
 
