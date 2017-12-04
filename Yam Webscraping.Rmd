@@ -13,6 +13,10 @@ library(pipeR)
 library(knitr)
 library(xml2)
 library(htmltab)
+library(readxl)
+library(tidyr)
+library(lubridate)
+options(tibble.width = Inf)
 ```
 
 ##Advanced PBP
@@ -25,6 +29,8 @@ AdvancedPBP <- AdvancedPBP %>%
   mutate(Team = "BOS") %>% 
   rename(Player = V1) %>% 
   dplyr::select(-Rk)
+
+head(AdvancedPBP)
 
 ```
 
@@ -40,6 +46,23 @@ Salary <- Salary %>%
   dplyr::select(-Rk)
 
 head(Salary)
+
+##Write a function to download this table for each year and for each team.
+
+funct.salary <- function(team, year){
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F",
+                     team, "%2F", year, ".html&div=div_salaries2")
+  
+  Salary <- htmltab(urltable) %>% 
+    mutate(Team = "BOS") %>% 
+    rename(Player = V1) %>% 
+    dplyr::select(-Rk)
+
+  return(Salary)
+}
+
+Salary <- funct.salary("CLE", "2017")
+head(Salary)
 ```
 
 ##Betting Odds
@@ -49,7 +72,7 @@ Better source: http://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nba
 ##Clean and combine the historical betting odds
 ```{r}
 setwd("C:/Users/dyam/Dropbox (Brown)/Brown/Statistical Programming/r-package-teamivy/Historical Betting Lines")
-library(readxl)
+
 NBA2018 <- readxl::read_excel("nba odds 2017-18.xlsx")
 NBA2017 <- readxl::read_excel("nba odds 2016-17.xlsx")
 NBA2016 <- readxl::read_excel("nba odds 2015-16.xlsx")
@@ -63,11 +86,133 @@ NBA2009 <- readxl::read_excel("nba odds 2008-09.xlsx")
 NBA2008 <- readxl::read_excel("nba odds 2007-08.xlsx")
 
 #Add a year variable to each table
-#Reformat the date variable
-#Spread the two visitor home rows into one row per game
-#Create new over under variable
-#Create new spread variable
+#Then reformat the date
+NBA2018 <- NBA2018 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2018), paste0(as.character(Date), 2017))) %>% 
+  mutate(Date = mdy(Date))
 
+NBA2017 <- NBA2017 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2017), paste0(as.character(Date), 2016))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2016 <- NBA2016 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2016), paste0(as.character(Date), 2015))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2015 <- NBA2015 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2015), paste0(as.character(Date), 2014))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2014 <- NBA2014 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2014), paste0(as.character(Date), 2013))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2013 <- NBA2013 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2013), paste0(as.character(Date), 2012))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2012 <- NBA2012 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2012), paste0(as.character(Date), 2011))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2011 <- NBA2011 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2011), paste0(as.character(Date), 2010))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2010 <- NBA2010 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2010), paste0(as.character(Date), 2009))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2009 <- NBA2009 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2009), paste0(as.character(Date), 2008))) %>% 
+  mutate(Date = mdy(Date))
+
+NBA2008 <- NBA2008 %>% 
+  mutate(Date = ifelse(Date < 900, paste0(0, as.character(Date), 2008), paste0(as.character(Date), 2007))) %>% 
+  mutate(Date = mdy(Date))
+
+#Combine the different years
+NBALines <- rbind(NBA2018, NBA2017, NBA2016, NBA2015, NBA2014,
+                      NBA2013, NBA2012, NBA2011, NBA2010, NBA2009, NBA2008)
+
+#Spread the two visitor home rows into one row per game
+head(NBALines)
+NBAHome <- NBALines %>% 
+  filter(VH == "H")
+NBAVis <- NBALines %>% 
+  filter(VH == "V")
+NBANeutral <- NBALines %>% 
+  filter(VH == "N")
+
+head(NBANeutral)
+
+temp <- NBANeutral %>% 
+  group_by(Date) %>% 
+  slice(1)
+
+NBAHome <- bind_rows(NBAHome, temp)
+
+temp2 <- NBANeutral %>% 
+  group_by(Date) %>% 
+  slice(2)
+
+NBAVis <- bind_rows(NBAVis, temp2)
+
+NBAOdds <- bind_cols(NBAHome, NBAVis)
+
+NBAOdds <- NBAOdds %>% 
+  rename(VH = VH, Date1 = Date1, VH1 = VH1)
+
+head(NBAOdds)
+#Some discrepancies with the dates
+NBAOdds %>% filter(Date != Date1)
+NBAOdds$Date[NBAOdds$Date == "2009-01-10" & NBAOdds$Team == "Phoenix"] <- "2009-01-09"
+NBAOdds$Date[NBAOdds$Date == "2011-01-30" & NBAOdds$Team == "LAClippers"] <- "2011-01-29"
+
+NBAOdds <- NBAOdds %>% 
+  select(-VH, -Date1, -VH1, -`2H`, -`2H1`)
+
+##Rename Variables
+names(NBAOdds) <- c("Date", "RotH", "Home", "HQ1","HQ2","HQ3","HQ4","HFinal","OpenSpread",
+                    "CloseSpread", "MoneyLineHome", "RotV", "Away",  "VQ1",   "VQ2",   "VQ3",   "VQ4",
+                    "VFinal", "OpenOverUnder",  "CloseOverUnder", "MoneyLineVisitor")
+
+head(NBAOdds)
+
+#Sometimes the spread and over under are switched we need to fix this.
+NBAOdds <- NBAOdds %>% 
+  mutate(OS = ifelse(OpenSpread > OpenOverUnder, OpenOverUnder, OpenSpread),
+         OOU = ifelse(OpenSpread > OpenOverUnder, OpenSpread, OpenOverUnder),
+         CS = ifelse(CloseSpread > CloseOverUnder, CloseOverUnder, CloseSpread),
+         COU = ifelse(CloseSpread > CloseOverUnder, CloseSpread, CloseOverUnder))
+
+for(i in 1:nrow(NBAOdds)) {
+  if(NBAOdds$OpenSpread > NBAOdds$OpenOverUnder) {
+    NBAOdds$OS = NBAOdds$OpenOverUnder
+    NBAOdds$OOU = NBAOdds$OpenSpread
+      } else {
+    NBAOdds$OS = NBAOdds$OpenSpread
+    NBAOdds$OOU = NBAOdds$OpenOverUnder
+  }
+  
+  if(NBAOdds$CloseSpread > NBAOdds$CloseOverUnder) {
+    NBAOdds$CS = NBAOdds$CloseSpread
+    NBAOdds$COU = NBAOdds$CloseOverUnder
+  } else {
+    NBAOdds$CS = NBAOdds$CloseSpread
+    NBAOdds$COU = NBAOdds$CloseOverUnder
+  }
+}
+  
+  
+#Create new over under variable
+NBAOdds <- NBAOdds %>% 
+  mutate(FinalOU = ifelse(HFinal + VFinal > CloseOverUnder, "Over", "Under"))
+head(NBAOdds)
+
+#Create new covered spread variable
+
+#Create win prob variable
 
 ```
 
