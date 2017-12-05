@@ -83,6 +83,20 @@ webscrape_team <- function(team,year,css_page){
 GSW_2017<-webscrape_team(GSW,2017,"#roster")
 
 ```
+#htmltab
+```{r}
+#opponent per game stats
+opgs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
+
+opsg_table <- function(year){
+  url<-paste0(opgs_url,year,".html&div=div_opponent-stats-per_game")
+  table<-htmltab(url)
+  return(table)
+}
+
+opsg<-opsg_table(2017)[-1]
+
+```
 
 #clean data
 ```{r}
