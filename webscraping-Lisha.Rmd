@@ -104,6 +104,10 @@ standings_east_2017<-webscrape_standings(2017,"E")
 names(standings_east_2017)[1]<-"Team"
 names(standings_west_2017)[1]<-"Team"
 
+standings_west_2017$Team<-gsub("[*(0-9)]","",standings_west_2017$Team)
+standings_west_2017$Team<-sub("\\s+$", "", standings_west_2017$Team)
+standings_west_2017$Team<-gsub(" ers"," 76ers",standings_west_2017$Team)
+
 #opponent per game stats
 opsg_table <- function(year){
   url<-paste0(opgs_url,year,".html&div=div_opponent-stats-per_game")
