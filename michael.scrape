@@ -1,0 +1,58 @@
+---
+title: "webscrapping"
+author: "Michael"
+date: "December 1, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(rvest)
+library(dplyr)
+library(pipeR)
+library(knitr)
+library(htmltab)
+````
+
+testing html/getting all the URL/looking to see what needs to be cleaned 
+```{r}
+#shooting, need to remove rank, add team varaible, rename V1 
+data <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_shooting")
+
+#advanced 
+data2 <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced")
+
+#playoffs - per game
+data3 <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017_per_game.html&div=div_per_game_stats")
+```
+
+create a function to grab the right tables for team data 
+```{r}
+get.team <- function(team, year, element){
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F", team,"%2F", year, ".html&div=div_", element)
+  table <- htmltab(urltable) %>% 
+    mutate(Team = team) %>% 
+    rename(Player = V1) %>% 
+    within(rm(Rk))
+
+  return(table)
+}
+
+bos.advanced <- get.team("BOS", "2015", "advanced")
+head(bos.advanced)
+```
+
+create function for playoffs 
+```{r}
+get.playoff <- function(year, type, table){
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_", year, "_", type, ".html&div=div_", table)
+  table <- htmltab(urltable)
+  return(table)
+}
+
+playoff2017 <- get.playoff("2015", "games", "schedule")
+head(playoff2017)
+```
