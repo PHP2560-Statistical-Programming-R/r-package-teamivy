@@ -27,7 +27,7 @@ options(tibble.width = Inf)
 ```{r}
 DailyOdds <- function(Date = "20171206"){
   if(ymd(Date) > today() +1) {
-    print("Sorry, the betting lines not set yet! Lines are only released for today and the following day. Check back again!")
+    print("Sorry, the betting lines are not set yet! Lines are only released for today and the following day. Check back again!")
   } else {
 ##Spreads Tables
 url.spread <- paste0("http://www.donbest.com/nba/odds/spreads/", Date, ".html")
