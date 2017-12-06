@@ -17,15 +17,263 @@ library(tidyr)
 library(lubridate)
 library(dplyr)
 library(stringr)
+library(stringi)
+library(rebus)
 options(tibble.width = Inf)
 ```
 
 
-##Look into live webscraping
+##Live Webscraping Function
+```{r}
+DailyOdds <- function(Date = "20171206"){
+##Spreads Tables
+url.spread <- paste0("http://www.donbest.com/nba/odds/spreads/", Date, ".html")
+
+SpreadsTable <- url.spread %>%
+    read_html %>%
+    html_nodes(xpath = '//*[@id="oddsHolder"]/div[1]/table') %>%
+    html_table(header = F, fill =T) %>%
+    data.frame() %>%
+    tbl_df()
+
+SpreadsTable <- SpreadsTable[-1, ]
+
+names(SpreadsTable) <- SpreadsTable[1,]
+SpreadsTable <- SpreadsTable[-1, ]
+
+SpreadsTable <- SpreadsTable %>% 
+  select(Rot, Opener, Team, Time, Bovada, Pinnacle, Mirage)
+
+#Rot works
+SpreadsTable <- SpreadsTable %>% 
+  mutate(Rot1 = as.character(Rot),
+         Rot2 = as.character(Rot))
+
+SpreadsTable$Rot1 <- str_sub(SpreadsTable$Rot1, 1, 3)
+SpreadsTable$Rot2 <- str_sub(SpreadsTable$Rot2, 4, 6)
+
+#We need to create a regex pattern
+SpreadsTable <- SpreadsTable %>% 
+  mutate(OS = Opener)
+
+#Opening Spread
+pattern <- str_c("[+-]", "[:digit:]+", ".?", "[:digit:]*","[\\s]")
+SpreadsTable$OSAway <- str_match(SpreadsTable$OS, pattern)
+SpreadsTable$OSAway <- sub("\\s+", "", SpreadsTable$OSAway)
+
+SpreadsTable$Bovada <- str_match(SpreadsTable$Bovada, pattern)
+SpreadsTable$Bovada <- sub("\\s+", "", SpreadsTable$Bovada)
+
+SpreadsTable$Pinnacle <- str_match(SpreadsTable$Pinnacle, pattern)
+SpreadsTable$Pinnacle <- sub("\\s+", "", SpreadsTable$Pinnacle)
+
+SpreadsTable$Mirage <- str_match(SpreadsTable$Mirage, pattern)
+SpreadsTable$Mirage <- sub("\\s+", "", SpreadsTable$Mirage)
+
+#Teams
+
+#Team Away City
+patternteam <- str_c("((^[:upper:][:lower:]+)[:blank:][:upper:][:lower:]+[:blank:])|((^[:upper:][:lower:]+)[:blank:])")
+SpreadsTable$TeamAwayCity <- str_match(SpreadsTable$Team, patternteam)
+SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam, "")
+
+#Team Away
+patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+SpreadsTable$TeamAway <- str_match(SpreadsTable$Team, patternteam2)
+SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam2, "")
+
+#Put the city and nickname together
+SpreadsTable <- as.data.frame(SpreadsTable)
+SpreadsTable$Bovada <- SpreadsTable$Bovada[,1]
+SpreadsTable$Mirage <- SpreadsTable$Mirage[,1]
+SpreadsTable$Pinnacle <- SpreadsTable$Pinnacle[,1]
+SpreadsTable$OSAway <- SpreadsTable$OSAway[,1]
+SpreadsTable$TeamAwayCity <- SpreadsTable$TeamAwayCity[,1]
+SpreadsTable$TeamAway <- SpreadsTable$TeamAway[,1]
+
+SpreadsTable <- SpreadsTable %>% 
+  mutate(Away = paste0(TeamAwayCity, TeamAway))
+
+SpreadsTable <- SpreadsTable %>% 
+  select(Team, Time, Bovada, Pinnacle, Mirage, Rot1, Rot2, OSAway, Away) %>% 
+  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+
+#MoneyLine Table
+url.ML <- paste0("http://www.donbest.com/nba/odds/money-lines/", Date, ".html")
+
+MoneyLineTable <- url.ML %>%
+    read_html %>%
+    html_nodes(xpath = '//*[@id="oddsHolder"]/div[1]/table') %>%
+    html_table(header = F, fill =T) %>%
+    data.frame() %>%
+    tbl_df()
+
+MoneyLineTable <- MoneyLineTable[-1, ]
+
+names(MoneyLineTable) <- MoneyLineTable[1,]
+MoneyLineTable <- MoneyLineTable[-1, ]
+
+MoneyLineTable <- MoneyLineTable %>% 
+  select(Rot, Opener, Team, Time, Bovada, Pinnacle, Mirage)
+
+#Rot works
+MoneyLineTable <- MoneyLineTable %>% 
+  mutate(Rot1 = as.character(Rot),
+         Rot2 = as.character(Rot))
+
+MoneyLineTable$Rot1 <- str_sub(MoneyLineTable$Rot1, 1, 3)
+MoneyLineTable$Rot2 <- str_sub(MoneyLineTable$Rot2, 4, 6)
+
+#Money Line Away
+pattern <- str_c("^[+-]", "[:digit:]+")
+MoneyLineTable$OpenerAwayML <- str_match(MoneyLineTable$Opener, pattern)
+MoneyLineTable$BovadaAwayML <- str_match(MoneyLineTable$Bovada, pattern)
+MoneyLineTable$PinnacleAwayML <- str_match(MoneyLineTable$Pinnacle, pattern)
+MoneyLineTable$MirageAwayML <- str_match(MoneyLineTable$Mirage, pattern)
+
+#Money Line Home
+pattern <- str_c("[+-]", "[:digit:]+$")
+MoneyLineTable$OpenerHomeML <- str_match(MoneyLineTable$Opener, pattern)
+MoneyLineTable$BovadaHomeML <- str_match(MoneyLineTable$Bovada, pattern)
+MoneyLineTable$PinnacleHomeML <- str_match(MoneyLineTable$Pinnacle, pattern)
+MoneyLineTable$MirageHomeML <- str_match(MoneyLineTable$Mirage, pattern)
+
+#Teams
+#Team Away City
+patternteam <- str_c("((^[:upper:][:lower:]+)[:blank:][:upper:][:lower:]+[:blank:])|((^[:upper:][:lower:]+)[:blank:])")
+MoneyLineTable$TeamAwayCity <- str_match(MoneyLineTable$Team, patternteam)
+MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam, "")
+
+#Team Away
+patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+MoneyLineTable$TeamAway <- str_match(MoneyLineTable$Team, patternteam2)
+MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam2, "")
+
+#Put the city and nickname together
+MoneyLineTable <- as.data.frame(MoneyLineTable)
+
+#Weird Structure
+
+MoneyLineTable$BovadaAwayML <- MoneyLineTable$BovadaAwayML[,1]
+MoneyLineTable$MirageAwayML <- MoneyLineTable$MirageAwayML[,1]
+MoneyLineTable$PinnacleAwayML <- MoneyLineTable$PinnacleAwayML[,1]
+MoneyLineTable$OpenerAwayML <- MoneyLineTable$OpenerAwayML[,1]
+MoneyLineTable$OpenerHomeML <- MoneyLineTable$OpenerHomeML[,1]
+MoneyLineTable$PinnacleHomeML <- MoneyLineTable$PinnacleHomeML[,1]
+MoneyLineTable$MirageHomeML <- MoneyLineTable$MirageHomeML[,1]
+MoneyLineTable$BovadaHomeML <- MoneyLineTable$BovadaHomeML[,1]
+
+#Team 
+MoneyLineTable$TeamAwayCity <- MoneyLineTable$TeamAwayCity[,1]
+MoneyLineTable$TeamAway <- MoneyLineTable$TeamAway[,1]
+
+MoneyLineTable <- MoneyLineTable %>% 
+  mutate(Away = paste0(TeamAwayCity, TeamAway))
+
+MoneyLineTable <- MoneyLineTable %>% 
+  select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>% 
+  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+
+url.OU <- paste0("http://www.donbest.com/nba/odds/totals/", Date, ".html")
+
+OverUnderTable <- url.OU %>%
+    read_html %>%
+    html_nodes(xpath = '//*[@id="oddsHolder"]/div[1]/table') %>%
+    html_table(header = F, fill =T) %>%
+    data.frame() %>%
+    tbl_df()
+
+OverUnderTable <- OverUnderTable[-1, ]
+
+names(OverUnderTable) <- OverUnderTable[1,]
+OverUnderTable <- OverUnderTable[-1, ]
+
+OverUnderTable <- OverUnderTable %>% 
+  select(Rot, Opener, Team, Time, Bovada, Pinnacle, Mirage)
+
+#Rot works
+OverUnderTable <- OverUnderTable %>% 
+  mutate(Rot1 = as.character(Rot),
+         Rot2 = as.character(Rot))
+
+OverUnderTable$Rot1 <- str_sub(OverUnderTable$Rot1, 1, 3)
+OverUnderTable$Rot2 <- str_sub(OverUnderTable$Rot2, 4, 6)
+
+#OverUnder
+pattern <- str_c("[:digit:]{3}\\.[:digit:]")
+OverUnderTable$OpenerOU <- str_match(OverUnderTable$Opener, pattern)
+OverUnderTable$BovadaOU <- str_match(OverUnderTable$Bovada, pattern)
+OverUnderTable$PinnacleOU <- str_match(OverUnderTable$Pinnacle, pattern)
+OverUnderTable$MirageOU <- str_match(OverUnderTable$Mirage, pattern)
+
+#Teams
+#Team Away City
+patternteam <- str_c("((^[:upper:][:lower:]+)[:blank:][:upper:][:lower:]+[:blank:])|((^[:upper:][:lower:]+)[:blank:])")
+OverUnderTable$TeamAwayCity <- str_match(OverUnderTable$Team, patternteam)
+OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam, "")
+
+#Team Away
+patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+OverUnderTable$TeamAway <- str_match(OverUnderTable$Team, patternteam2)
+OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam2, "")
+
+#Put the city and nickname together
+OverUnderTable <- as.data.frame(OverUnderTable)
+#Weird Structure
+
+OverUnderTable$BovadaOU <- OverUnderTable$BovadaOU[,1]
+OverUnderTable$MirageOU <- OverUnderTable$MirageOU[,1]
+OverUnderTable$PinnacleOU <- OverUnderTable$PinnacleOU[,1]
+OverUnderTable$OpenerOU <- OverUnderTable$OpenerOU[,1]
+
+#Team 
+OverUnderTable$TeamAwayCity <- OverUnderTable$TeamAwayCity[,1]
+OverUnderTable$TeamAway <- OverUnderTable$TeamAway[,1]
+
+OverUnderTable <- OverUnderTable %>% 
+  mutate(Away = paste0(TeamAwayCity, TeamAway))
+
+OverUnderTable <- OverUnderTable %>% 
+  select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>% 
+  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+
+BettingTable <- left_join(SpreadsTable, MoneyLineTable, by = c("Home", "Away", "Time", "RotAway", "RotHome")) %>% 
+  left_join(OverUnderTable, by = c("Home", "Away", "Time", "RotAway", "RotHome"))
+
+BettingTable <- BettingTable[, c(1, 9, 2:8, 10:21)] %>% 
+  rename(BovadaAwayS = Bovada,
+         PinnacleAwayS = Pinnacle,
+         MirageAwayS = Mirage,
+         OpenerAwayS = OSAway)
+
+BettingTable <- BettingTable %>% 
+  mutate(Time = hm(Time))
+
+for(i in 4:length(BettingTable)){
+  BettingTable[,i] <- as.numeric(BettingTable[,i]) 
+}
+
+#Create a win probability from the Bovada money line
+BettingTable <- BettingTable %>% 
+  mutate(WP.HB = ifelse(BovadaHomeML > 0, 100/(BovadaHomeML + 100),
+                       BovadaHomeML/(BovadaHomeML -100)),
+         WP.VB = ifelse(BovadaAwayML > 0, 100/(BovadaAwayML + 100),
+                       BovadaAwayML/(BovadaAwayML -100)),
+         WP.H = (WP.HB + (1-WP.VB))/2,
+         WP.V = 1 - WP.H)  %>% 
+  select(-WP.HB, -WP.VB)
+return(BettingTable)
+}
+
+DailyOdds("20171206")
+
+```
+
+
 
 ```{r}
 ##Spreads Tables
-url <-  "http://www.donbest.com/nba/odds/spreads/20171204.html"
+url <-  "http://www.donbest.com/nba/odds/spreads/20171206.html"
 
 SpreadsTable <- url %>%
     read_html %>%
@@ -44,58 +292,248 @@ SpreadsTable <- SpreadsTable %>%
   select(Rot, Opener, Team, Time, Bovada, Pinnacle, Mirage)
 
 #Rot works
-temp <- SpreadsTable %>% 
+SpreadsTable <- SpreadsTable %>% 
   mutate(Rot1 = as.character(Rot),
          Rot2 = as.character(Rot))
 
-temp$Rot1 <- str_sub(temp$Rot1, 1, 3)
-temp$Rot2 <- str_sub(temp$Rot2, 4, 6)
+SpreadsTable$Rot1 <- str_sub(SpreadsTable$Rot1, 1, 3)
+SpreadsTable$Rot2 <- str_sub(SpreadsTable$Rot2, 4, 6)
 
-#Opener
 #We need to create a regex pattern
-temp <- SpreadsTable %>% 
-  mutate(OS = Opener,
-         ML = Opener)
+SpreadsTable <- SpreadsTable %>% 
+  mutate(OS = Opener)
 
-library(stringi)
-library(rebus)
-pattern <- START %R% or("+", "-") %R% one_or_more(DGT) %R% optional(".") %R%
-  zero_or_more(DGT) %R% or("+", "-") %R% one_or_more(DGT) %R% or("+", "-")
-, "[+-]", "[:digit:]+", "[+-]"
+#Opening Spread
 pattern <- str_c("[+-]", "[:digit:]+", ".?", "[:digit:]*","[\\s]")
-temp$OS <- str_match(temp$OS, pattern)
-funct.salary <- function(team, year){
-  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F",
-                     team, "%2F", year, ".html&div=div_salaries2")
-  
-  Salary <- htmltab(urltable) %>% 
-    mutate(Team = team) %>% 
-    rename(Player = V1) %>% 
-    dplyr::select(-Rk)
+SpreadsTable$OSAway <- str_match(SpreadsTable$OS, pattern)
+SpreadsTable$OSAway <- sub("\\s+", "", SpreadsTable$OSAway)
 
-  return(Salary)
-}
+SpreadsTable$Bovada <- str_match(SpreadsTable$Bovada, pattern)
+SpreadsTable$Bovada <- sub("\\s+", "", SpreadsTable$Bovada)
 
-Salary <- funct.salary("CLE", "2017")
+SpreadsTable$Pinnacle <- str_match(SpreadsTable$Pinnacle, pattern)
+SpreadsTable$Pinnacle <- sub("\\s+", "", SpreadsTable$Pinnacle)
 
+SpreadsTable$Mirage <- str_match(SpreadsTable$Mirage, pattern)
+SpreadsTable$Mirage <- sub("\\s+", "", SpreadsTable$Mirage)
+
+#Teams
+
+#Team Away City
+patternteam <- str_c("((^[:upper:][:lower:]+)[:blank:][:upper:][:lower:]+[:blank:])|((^[:upper:][:lower:]+)[:blank:])")
+SpreadsTable$TeamAwayCity <- str_match(SpreadsTable$Team, patternteam)
+SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam, "")
+
+#Team Away
+patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+SpreadsTable$TeamAway <- str_match(SpreadsTable$Team, patternteam2)
+SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam2, "")
+
+#Put the city and nickname together
+SpreadsTable <- as.data.frame(SpreadsTable)
+SpreadsTable$Bovada <- SpreadsTable$Bovada[,1]
+SpreadsTable$Mirage <- SpreadsTable$Mirage[,1]
+SpreadsTable$Pinnacle <- SpreadsTable$Pinnacle[,1]
+SpreadsTable$OSAway <- SpreadsTable$OSAway[,1]
+SpreadsTable$TeamAwayCity <- SpreadsTable$TeamAwayCity[,1]
+SpreadsTable$TeamAway <- SpreadsTable$TeamAway[,1]
+
+SpreadsTable <- SpreadsTable %>% 
+  mutate(Away = paste0(TeamAwayCity, TeamAway))
+
+SpreadsTable <- SpreadsTable %>% 
+  select(Team, Time, Bovada, Pinnacle, Mirage, Rot1, Rot2, OSAway, Away) %>% 
+  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+```
 
 ##MoneyLine Tables
-url <-  "http://www.donbest.com/nba/odds/money-lines/20171203.html"
+```{r}
+url <-  "http://www.donbest.com/nba/odds/money-lines/20171206.html"
 
 MoneyLineTable <- url %>%
     read_html %>%
     html_nodes(xpath = '//*[@id="oddsHolder"]/div[1]/table') %>%
-    html_table(header = T, fill =T) %>%
+    html_table(header = F, fill =T) %>%
     data.frame() %>%
     tbl_df()
 
-head(SpreadsTable)
+head(MoneyLineTable)
+
+
+MoneyLineTable <- MoneyLineTable[-1, ]
+
+names(MoneyLineTable) <- MoneyLineTable[1,]
+MoneyLineTable <- MoneyLineTable[-1, ]
+
+MoneyLineTable <- MoneyLineTable %>% 
+  select(Rot, Opener, Team, Time, Bovada, Pinnacle, Mirage)
+
+#Rot works
+MoneyLineTable <- MoneyLineTable %>% 
+  mutate(Rot1 = as.character(Rot),
+         Rot2 = as.character(Rot))
+
+MoneyLineTable$Rot1 <- str_sub(MoneyLineTable$Rot1, 1, 3)
+MoneyLineTable$Rot2 <- str_sub(MoneyLineTable$Rot2, 4, 6)
+
+#Money Line Away
+pattern <- str_c("^[+-]", "[:digit:]+")
+MoneyLineTable$OpenerAwayML <- str_match(MoneyLineTable$Opener, pattern)
+MoneyLineTable$BovadaAwayML <- str_match(MoneyLineTable$Bovada, pattern)
+MoneyLineTable$PinnacleAwayML <- str_match(MoneyLineTable$Pinnacle, pattern)
+MoneyLineTable$MirageAwayML <- str_match(MoneyLineTable$Mirage, pattern)
+
+#Money Line Home
+pattern <- str_c("[+-]", "[:digit:]+$")
+MoneyLineTable$OpenerHomeML <- str_match(MoneyLineTable$Opener, pattern)
+MoneyLineTable$BovadaHomeML <- str_match(MoneyLineTable$Bovada, pattern)
+MoneyLineTable$PinnacleHomeML <- str_match(MoneyLineTable$Pinnacle, pattern)
+MoneyLineTable$MirageHomeML <- str_match(MoneyLineTable$Mirage, pattern)
+
+#Teams
+#Team Away City
+patternteam <- str_c("((^[:upper:][:lower:]+)[:blank:][:upper:][:lower:]+[:blank:])|((^[:upper:][:lower:]+)[:blank:])")
+MoneyLineTable$TeamAwayCity <- str_match(MoneyLineTable$Team, patternteam)
+MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam, "")
+
+#Team Away
+patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+MoneyLineTable$TeamAway <- str_match(MoneyLineTable$Team, patternteam2)
+MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam2, "")
+
+#Put the city and nickname together
+MoneyLineTable <- as.data.frame(MoneyLineTable)
+#Weird Structure
+
+MoneyLineTable$BovadaAwayML <- MoneyLineTable$BovadaAwayML[,1]
+MoneyLineTable$MirageAwayML <- MoneyLineTable$MirageAwayML[,1]
+MoneyLineTable$PinnacleAwayML <- MoneyLineTable$PinnacleAwayML[,1]
+MoneyLineTable$OpenerAwayML <- MoneyLineTable$OpenerAwayML[,1]
+MoneyLineTable$OpenerHomeML <- MoneyLineTable$OpenerHomeML[,1]
+MoneyLineTable$PinnacleHomeML <- MoneyLineTable$PinnacleHomeML[,1]
+MoneyLineTable$MirageHomeML <- MoneyLineTable$MirageHomeML[,1]
+MoneyLineTable$BovadaHomeML <- MoneyLineTable$BovadaHomeML[,1]
+
+#Team 
+MoneyLineTable$TeamAwayCity <- MoneyLineTable$TeamAwayCity[,1]
+MoneyLineTable$TeamAway <- MoneyLineTable$TeamAway[,1]
+
+MoneyLineTable <- MoneyLineTable %>% 
+  mutate(Away = paste0(TeamAwayCity, TeamAway))
+
+MoneyLineTable <- MoneyLineTable %>% 
+  select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>% 
+  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+
+head(MoneyLineTable)
+```
+
+##Over Under 
+```{r}
+url <- "http://www.donbest.com/nba/odds/totals/20171206.html"
+
+OverUnderTable <- url %>%
+    read_html %>%
+    html_nodes(xpath = '//*[@id="oddsHolder"]/div[1]/table') %>%
+    html_table(header = F, fill =T) %>%
+    data.frame() %>%
+    tbl_df()
+
+head(OverUnderTable)
+
+
+OverUnderTable <- OverUnderTable[-1, ]
+
+names(OverUnderTable) <- OverUnderTable[1,]
+OverUnderTable <- OverUnderTable[-1, ]
+
+OverUnderTable <- OverUnderTable %>% 
+  select(Rot, Opener, Team, Time, Bovada, Pinnacle, Mirage)
+
+#Rot works
+OverUnderTable <- OverUnderTable %>% 
+  mutate(Rot1 = as.character(Rot),
+         Rot2 = as.character(Rot))
+
+OverUnderTable$Rot1 <- str_sub(OverUnderTable$Rot1, 1, 3)
+OverUnderTable$Rot2 <- str_sub(OverUnderTable$Rot2, 4, 6)
+
+#OverUnder
+pattern <- str_c("[:digit:]{3}\\.[:digit:]")
+OverUnderTable$OpenerOU <- str_match(OverUnderTable$Opener, pattern)
+OverUnderTable$BovadaOU <- str_match(OverUnderTable$Bovada, pattern)
+OverUnderTable$PinnacleOU <- str_match(OverUnderTable$Pinnacle, pattern)
+OverUnderTable$MirageOU <- str_match(OverUnderTable$Mirage, pattern)
+
+#Teams
+#Team Away City
+patternteam <- str_c("((^[:upper:][:lower:]+)[:blank:][:upper:][:lower:]+[:blank:])|((^[:upper:][:lower:]+)[:blank:])")
+OverUnderTable$TeamAwayCity <- str_match(OverUnderTable$Team, patternteam)
+OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam, "")
+
+#Team Away
+patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+OverUnderTable$TeamAway <- str_match(OverUnderTable$Team, patternteam2)
+OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam2, "")
+
+#Put the city and nickname together
+OverUnderTable <- as.data.frame(OverUnderTable)
+#Weird Structure
+
+
+OverUnderTable$BovadaOU <- OverUnderTable$BovadaOU[,1]
+OverUnderTable$MirageOU <- OverUnderTable$MirageOU[,1]
+OverUnderTable$PinnacleOU <- OverUnderTable$PinnacleOU[,1]
+OverUnderTable$OpenerOU <- OverUnderTable$OpenerOU[,1]
+
+#Team 
+OverUnderTable$TeamAwayCity <- OverUnderTable$TeamAwayCity[,1]
+OverUnderTable$TeamAway <- OverUnderTable$TeamAway[,1]
+
+OverUnderTable <- OverUnderTable %>% 
+  mutate(Away = paste0(TeamAwayCity, TeamAway))
+
+OverUnderTable <- OverUnderTable %>% 
+  select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>% 
+  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+
+head(OverUnderTable)
 
 ```
 
+##Bind the individual tables together.
+```{r}
+head(SpreadsTable)
+head(MoneyLineTable)
+head(OverUnderTable)
 
-##Learning Javascript scraping
-From: https://www.r-bloggers.com/short-r-tutorial-scraping-javascript-generated-data-with-r/
-From: https://www.r-bloggers.com/scraping-javascript-rendered-web-content-using-r/
-From: https://www.r-bloggers.com/web-scraping-javascript-rendered-sites/
+BettingTable <- left_join(SpreadsTable, MoneyLineTable, by = c("Home", "Away", "Time", "RotAway", "RotHome")) %>% 
+  left_join(OverUnderTable, by = c("Home", "Away", "Time", "RotAway", "RotHome"))
+
+BettingTable <- BettingTable[, c(1, 9, 2:8, 10:21)] %>% 
+  rename(BovadaAwayS = Bovada,
+         PinnacleAwayS = Pinnacle,
+         MirageAwayS = Mirage,
+         OpenerAwayS = OSAway)
+
+BettingTable <- BettingTable %>% 
+  mutate(Time = hm(Time))
+
+for(i in 4:length(BettingTable)){
+  BettingTable[,i] <- as.numeric(BettingTable[,i]) 
+}
+
+#Create a win probability from the Bovada money line
+BettingTable <- BettingTable %>% 
+  mutate(WP.HB = ifelse(BovadaHomeML > 0, 100/(BovadaHomeML + 100),
+                       BovadaHomeML/(BovadaHomeML -100)),
+         WP.VB = ifelse(BovadaAwayML > 0, 100/(BovadaAwayML + 100),
+                       BovadaAwayML/(BovadaAwayML -100)),
+         WP.H = (WP.HB + (1-WP.VB))/2,
+         WP.V = 1 - WP.H)  %>% 
+  select(-WP.HB, -WP.VB)
+
+
+head(BettingTable)
+```
 
