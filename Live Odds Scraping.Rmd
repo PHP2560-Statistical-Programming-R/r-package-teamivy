@@ -26,6 +26,9 @@ options(tibble.width = Inf)
 ##Live Webscraping Function
 ```{r}
 DailyOdds <- function(Date = "20171206"){
+  if(ymd(Date) > today() +1) {
+    print("Sorry, the betting lines not set yet! Lines are only released for today and the following day. Check back again!")
+  } else {
 ##Spreads Tables
 url.spread <- paste0("http://www.donbest.com/nba/odds/spreads/", Date, ".html")
 
@@ -255,24 +258,36 @@ for(i in 4:length(BettingTable)){
 
 #Create a win probability from the Bovada money line
 BettingTable <- BettingTable %>% 
-  mutate(WP.HB = ifelse(BovadaHomeML > 0, 100/(BovadaHomeML + 100),
-                       BovadaHomeML/(BovadaHomeML -100)),
-         WP.VB = ifelse(BovadaAwayML > 0, 100/(BovadaAwayML + 100),
-                       BovadaAwayML/(BovadaAwayML -100)),
+  mutate(WP.HB = ifelse(PinnacleHomeML > 0, 100/(PinnacleHomeML + 100),
+                       PinnacleHomeML/(PinnacleHomeML -100)),
+         WP.VB = ifelse(PinnacleAwayML > 0, 100/(PinnacleAwayML + 100),
+                       PinnacleAwayML/(PinnacleAwayML -100)),
          WP.H = (WP.HB + (1-WP.VB))/2,
          WP.V = 1 - WP.H)  %>% 
-  select(-WP.HB, -WP.VB)
+  select(-WP.HB, -WP.VB) %>% 
+  mutate(Date = ymd(Date))
 return(BettingTable)
+  }
+  
 }
 
 DailyOdds("20171206")
 
 ```
 
-
-
+##Create some functions
 ```{r}
+
+NBAOdds <- read.csv()
+find_previous_matchups <- function(Team1, Team2) {
+  
+}
+
+```
+
 ##Spreads Tables
+```{r}
+
 url <-  "http://www.donbest.com/nba/odds/spreads/20171206.html"
 
 SpreadsTable <- url %>%
