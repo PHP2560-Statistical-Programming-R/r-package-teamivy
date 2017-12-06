@@ -89,8 +89,10 @@ schedule_table<-function(year){
     drop_na() %>%
     select(-V2) %>%
     filter(Date !="Playoffs")
-  names(result)[3]<-"Visit team"
-  names(result)[5]<-"Team"
+  names(result)[3]<-"Visitor team"
+  names(result)[4]<-"PTS home"
+  names(result)[5]<-"Home team"
+  names(result)[6]<-"PTS visitor"
   return(result)
 }
 
