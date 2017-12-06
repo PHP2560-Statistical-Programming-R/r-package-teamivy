@@ -86,7 +86,7 @@ November_2017<-schedule_table(2017,"november")
 names(November_2017)[3]<-"Visit team"
 names(November_2017)[5]<-"Home team"
 
-#webscape standings for east or west conference
+#webscape standings for east or west conference and clean it.
 webscrape_standings<-function(year,conference){
   url<-paste(standing_url,year,'_standings.html',sep="")
   table<-url %>% 
@@ -95,14 +95,15 @@ webscrape_standings<-function(year,conference){
   html_table(header = T) %>%
   data.frame() %>%
   tbl_df()
+  names(table)[1]<-"Team"
+  table$Team<-gsub("[*(0-9)]","",table$Team)
+  table$Team<-sub("\\s+$", "", table$Team)
+  table$Team<-gsub(" ers"," 76ers", table$Team)
   return(table)
 }
 
 standings_west_2017<-webscrape_standings(2017,"W")
 standings_east_2017<-webscrape_standings(2017,"E")
-
-names(standings_east_2017)[1]<-"Team"
-names(standings_west_2017)[1]<-"Team"
 
 #opponent per game stats
 opsg_table <- function(year){
@@ -122,11 +123,5 @@ ops_table<-function(year){
 
 ops<-ops_table(2017)[-1]
 
-```
-
-#clean data
-```{r}
-unicode_pattern <-"<U+00A0>"
-standings_east$Eastern.Conference<-str_replace_all(standings_east$Eastern.Conference,unicode_pattern,replacement = "")
 ```
 
