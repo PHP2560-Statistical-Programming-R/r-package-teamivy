@@ -1,0 +1,106 @@
+---
+title: "NBA Team Analysis Package"
+author: "Teresa DeAtley"
+date: "November 29, 2017"
+output: html_document
+---
+```{r}
+library(rvest)
+library(dplyr)
+#library(pipeR)javascript:;
+library(magrittr)
+library(knitr)
+install.packages("htmltab")
+library(htmltab)
+```
+
+---
+title: "NBA Team Analysis Package"
+author: "Teresa DeAtley"
+date: "November 29, 2017"
+output: html_document
+---
+```{r}
+library(rvest)
+library(dplyr)
+#library(pipeR)javascript:;
+library(magrittr)
+library(knitr)
+install.packages("htmltab")
+library(htmltab)
+```
+
+
+```{r}
+Roster <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_per_game")
+
+head(Roster)
+
+Roster <- Roster %>% 
+  mutate(Team = "BOS") %>% 
+  rename(Player = V1) %>% 
+  dplyr::select(-Rk)
+
+head(Roster)
+
+##Write a function to download this table for each year and for each team.
+
+funct.roster <- function(team, year){
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F",team, "%2F", year, ".html&div=div_per_game")
+  
+  Roster <- htmltab(urltable) %>% 
+    mutate(Team = team) %>% 
+    rename(Player = V1) %>% 
+    dplyr::select(-Rk)
+
+  return(Roster)
+}
+
+Roster <- funct.roster("BOS", "2017")
+head(Roster)
+```
+
+```{r}
+Per_Game <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_per_game")
+
+head(Per_Game)
+
+Per_Game <- Per_Game %>% 
+  mutate(Team = "BOS") %>% 
+  rename(Player = V1) %>% 
+  dplyr::select(-Rk)
+
+head(Per_Game)
+
+##Write a function to download this table for each year and for each team.
+
+funct.Per_game <- function(team, year){
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F",team, "%2F", year, ".html&div=div_per_game")
+  
+  Per_Game <- htmltab(urltable) %>% 
+    mutate(Team = team) %>% 
+    rename(Player = V1) %>% 
+    dplyr::select(-Rk)
+
+  return(Per_Game)
+}
+
+Per_Game <- funct.Per_game("BOS", "2017")
+head(Per_Game)
+```
+
+```{r}
+Playoff_schedule <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017_games.html&div=div_schedule")
+
+funct.Playoff_schedule <- function(year, type, table){
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_", year, "_", type, ".html&div=div_", table)
+  table <- htmltab(urltable)
+  return(table)
+}
+
+Playoff_schedule<- funct.Playoff_schedule("2015", "games", "schedule")
+head(Playoff_schedule)
+```
+
+
+
