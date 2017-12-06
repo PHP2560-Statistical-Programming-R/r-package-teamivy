@@ -12,62 +12,6 @@ library(knitr)
 library(stringr)
 ```
 
-#Webscrape data
-```{r}
-http1 <- 'https://www.basketball-reference.com/teams/'
-http2 <- 'https://www.basketball-reference.com/leagues/NBA_2017_'
-http3 <- 'https://www.basketball-reference.com/playoffs/'
-
-#Webscrape schedule according to month
-webscrape_schedule<-function(month,css_page){
-  a<-substitute(month)
-  a<-as.character(a)
-  url<-paste(http2,'games-',a,'.html',sep="")
-  table<-url %>% 
-  read_html()%>% 
-  html_nodes(css_page) %>% 
-  html_table(header = T) %>%
-  data.frame() %>%
-  tbl_df()
-  return(table)
-}
-
-schedule<-webscrape_schedule(december,"#schedule")
-
-
-#webscrape playoffs summary for specified year 
-webscrape_playoffs<-function(year,css_page){
-  url<-paste(http3,'NBA_',year,'.html',sep = "")
-  print(url)
-  table<-url %>% 
-  read_html()%>% 
-  html_nodes(css_page) %>% 
-  html_table(header = T) %>%
-  data.frame() %>%
-  tbl_df()
-  return(table)
-}
-
-OPGS_2017<-webscrape_playoffs(2017,"#team-stats-per_game")
-#I can't pull opponents stats, always 0 variable?????
-
-#websrape stats for each team and year
-webscrape_team <- function(team,year,css_page){
-  a<-substitute(team)
-  a<-as.character(a)
-  url<-paste(http1,a,"/",year,".html",sep="")
-  table<-url %>% 
-    read_html()%>% 
-    html_nodes(css_page) %>% 
-    html_table(header = T) %>%
-    data.frame() %>%
-    tbl_df()
-  return(table)
-}
-
-GSW_2017<-webscrape_team(GSW,2017,"#roster")
-
-```
 #htmltab
 ```{r}
 schedule_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_"
