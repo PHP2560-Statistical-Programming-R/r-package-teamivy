@@ -1,0 +1,49 @@
+```{r}
+library(rvest)
+library(dplyr)
+library(pipeR)
+library(knitr)
+```
+
+```{r}
+contract_url <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fcontracts%2F"
+
+contract_table <- function(team){
+  url <- paste0(contract_url,team,".html&div=div_contracts")
+  table <- htmltab(url)
+  return(table)
+}
+
+```
+
+```{r}
+pgs_url <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
+
+pgs_table <- function(year){
+  url <- paste0(pgs_url,year,".html&div=div_team-stats-per_game")
+  table <- htmltab(url)
+  return(table)
+}
+
+playoffs2017pgs <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017.html&div=div_team-stats-per_game")
+```
+
+```{r}
+caphistory <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fcontracts%2Fsalary-cap-history.html&div=div_salary_cap_history")
+```
+
+```{r}
+shoot_url <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
+
+shoot_table <- function(year){
+  url <- paste0(shoot_url,year,".html&div=div_team_shooting")
+  table <- htmltab(url)
+  return(table)
+}
+
+playoffs2017shooting <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017.html&div=div_team_shooting")
+```
+
+```{r}
+
+```
