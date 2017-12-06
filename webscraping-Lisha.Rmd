@@ -128,9 +128,3 @@ ops<-ops_table(2017)[-1]
 
 ```
 
-#clean data
-```{r}
-unicode_pattern <-"<U+00A0>"
-standings_east$Eastern.Conference<-str_replace_all(standings_east$Eastern.Conference,unicode_pattern,replacement = "")
-```
-
