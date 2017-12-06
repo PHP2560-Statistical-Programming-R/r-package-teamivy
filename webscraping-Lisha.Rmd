@@ -76,15 +76,27 @@ opgs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fpl
 ops_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
 
 #schedule
-schedule_table<-function(year,month){
-  url<-paste0(schedule_url,year,"_games-",month,".html&div=div_schedule")
-  table<-htmltab(url)
-  return(table)
+schedule_table<-function(year){
+  month=c("october","november","december","january","february",
+          "march","april","may","june")
+  result=NA
+  for(a in 1:9){
+    url<-paste0(schedule_url,year,"_games-",month[a],".html&div=div_schedule")
+    print(url)
+    table<-htmltab(url)
+    result=rbind(result,table)}
+  result<-result %>% 
+    drop_na() %>%
+    select(-V2) %>%
+    filter(Date !="Playoffs")
+  names(result)[3]<-"Visitor team"
+  names(result)[4]<-"PTS home"
+  names(result)[5]<-"Home team"
+  names(result)[6]<-"PTS visitor"
+  return(result)
 }
 
-November_2017<-schedule_table(2017,"november") 
-names(November_2017)[3]<-"Visit team"
-names(November_2017)[5]<-"Home team"
+schedule_2017<-schedule_table(2017)
 
 #webscape standings for east or west conference and clean it.
 webscrape_standings<-function(year,conference){
