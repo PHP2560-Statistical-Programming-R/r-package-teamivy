@@ -1,0 +1,70 @@
+---
+title: "Yam Package File"
+author: "Derrick Yam"
+date: "November 29, 2017"
+output: html_document
+---
+
+##Load Libraries
+```{r}
+library(rvest)
+library(pipeR)
+library(knitr)
+library(xml2)
+library(htmltab)
+library(readxl)
+library(tidyr)
+library(lubridate)
+library(dplyr)
+library(stringr)
+options(tibble.width = Inf)
+```
+
+##Advanced PBP
+```{r}
+AdvancedPBP <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced")
+
+head(AdvancedPBP)
+
+AdvancedPBP <- AdvancedPBP %>% 
+  mutate(Team = "BOS") %>% 
+  rename(Player = V1) %>% 
+  dplyr::select(-Rk)
+
+head(AdvancedPBP)
+
+```
+
+##Salary
+```{r}
+Salary <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_salaries2")
+
+head(Salary)
+
+Salary <- Salary %>% 
+  mutate(Team = "BOS") %>% 
+  rename(Player = V1) %>% 
+  dplyr::select(-Rk)
+
+head(Salary)
+
+##Write a function to download this table for each year and for each team.
+
+funct.salary <- function(team, year){
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F",
+                     team, "%2F", year, ".html&div=div_salaries2")
+  
+  Salary <- htmltab(urltable) %>% 
+    mutate(Team = team) %>% 
+    rename(Player = V1) %>% 
+    dplyr::select(-Rk)
+
+  return(Salary)
+}
+
+Salary <- funct.salary("CLE", "2017")
+head(Salary)
+```
+
+
+
