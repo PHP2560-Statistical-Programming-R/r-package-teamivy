@@ -32,6 +32,6 @@ NBAOdds <- NBAOdds %>%
 
 #NBAOdds <- NBAOdds[, c(1, 3, 2, )]
 head(NBAOdds)
-
+str(NBAOdds)
 write.csv(NBAOdds, "NBAOdds20072018Update.csv")
 ```
