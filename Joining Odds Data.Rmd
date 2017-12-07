@@ -1,0 +1,11 @@
+---
+title: "Joining Odds Data"
+author: "Derrick Yam"
+date: "December 6, 2017"
+output: html_document
+---
+
+```{r}
+NBAOdds <- read.csv("NBAOdds20072018.csv")
+
+```
