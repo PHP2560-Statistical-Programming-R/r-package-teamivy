@@ -2,10 +2,10 @@ Package: NBAStats
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Author: Derrick Yam, David Chen, Tess DeAtley, Lisha Wang, Micheal Nguyen
+Maintainer: <derrick_yam@brown.edu>
+Description: Webscrapes tables from basketball_reference live for you without having to know any webscraping code. 
+Also, includes betting data so that people can run their own betting analyses.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true

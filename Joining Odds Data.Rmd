@@ -35,3 +35,34 @@ head(NBAOdds)
 str(NBAOdds)
 write.csv(NBAOdds, "NBAOdds20072018Update.csv")
 ```
+
+```{r}
+schedule_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_"
+standing_url<-"https://www.basketball-reference.com/leagues/NBA_"
+opgs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
+ops_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
+
+#schedule
+schedule_table<-function(year){
+  month=c("october","november","december","january","february",
+          "march","april","may","june")
+  result=NA
+  for(a in 1:9){
+    url<-paste0(schedule_url,year,"_games-",month[a],".html&div=div_schedule")
+    table<-htmltab(url)
+    result=rbind(result,table)}
+  result<-result %>% 
+    drop_na() %>%
+    filter(Date !="Playoffs")
+  names(result)[3]<-"Visitor"
+  names(result)[4]<-"PTSH"
+  names(result)[5]<-"Home"
+  names(result)[6]<-"PTSV"
+  result$Date<-as.Date(result$Date, '%a, %b %d, %Y')
+  return(result)
+}
+
+schedule_2017<-schedule_table(2017)
+head(schedule_2017)
+
+```

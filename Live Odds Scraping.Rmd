@@ -271,7 +271,7 @@ return(BettingTable)
   
 }
 
-DailyOdds("20171206")
+DailyOdds("20151206")
 
 ```
 
