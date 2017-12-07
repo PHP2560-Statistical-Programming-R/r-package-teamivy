@@ -26,17 +26,17 @@ schedule_table<-function(year){
   result=NA
   for(a in 1:9){
     url<-paste0(schedule_url,year,"_games-",month[a],".html&div=div_schedule")
-    print(url)
     table<-htmltab(url)
     result=rbind(result,table)}
   result<-result %>% 
     drop_na() %>%
     select(-V2) %>%
     filter(Date !="Playoffs")
-  names(result)[3]<-"Visitor team"
-  names(result)[4]<-"PTS home"
-  names(result)[5]<-"Home team"
-  names(result)[6]<-"PTS visitor"
+  names(result)[3]<-"Visitor"
+  names(result)[4]<-"PTSH"
+  names(result)[5]<-"Home"
+  names(result)[6]<-"PTSV"
+  result$Date<-as.Date(schedule_2017$Date, '%a, %b %d, %Y')
   return(result)
 }
 
