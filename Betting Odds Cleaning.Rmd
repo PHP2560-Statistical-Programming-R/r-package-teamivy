@@ -264,6 +264,7 @@ NBAOdds <- NBAOdds %>%
 NBAOdds <- NBAOdds %>% 
   mutate(Covered = ifelse(HFinal + SpreadH - VFinal > 0, 1, 0))
 
-write.csv(NBAOdds, "NBAOdds20072018.csv")
+##The team names were edited in Excel
+#write.csv(NBAOdds, "NBAOdds20072018.csv")
 ```
 

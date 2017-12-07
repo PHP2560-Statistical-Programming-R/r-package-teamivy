@@ -5,7 +5,33 @@ date: "December 6, 2017"
 output: html_document
 ---
 
+##Libraries
 ```{r}
-NBAOdds <- read.csv("NBAOdds20072018.csv")
+library(lubridate)
+library(dplyr)
 
+```
+
+##Load the data after the names were edited in Excel
+```{r}
+NBAOdds <- read.csv("NBAOdds20072018.csv") 
+```
+
+##Format the data frame so that it easily joins with the data webscraped.
+
+```{r}
+head(NBAOdds)
+NBAOdds <- NBAOdds %>% 
+  select(-X) %>% 
+  mutate(Date = mdy(Date))
+
+NBAOdds <- NBAOdds %>% 
+  rename(PTSH = HFinal,
+         PTSV = VFinal,
+         Visitor = Away)
+
+#NBAOdds <- NBAOdds[, c(1, 3, 2, )]
+head(NBAOdds)
+str(NBAOdds)
+write.csv(NBAOdds, "NBAOdds20072018Update.csv")
 ```
