@@ -10,6 +10,8 @@ library(dplyr)
 library(pipeR)
 library(knitr)
 library(stringr)
+library(htmltab)
+library(tidyr)
 ```
 
 #htmltab
@@ -21,26 +23,42 @@ ops_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fpla
 
 #schedule
 schedule_table<-function(year){
-  month=c("october","november","december","january","february",
+  if(year>2018){
+    print("The season doesn't start")
+  }else if(year<2001){
+    print("The season isn't included")
+  }else{
+    if(year==2012){
+    month=c("december","january","february",
+          "march","april","may","june")
+    }else{
+    month=c("october","november","december","january","february",
           "march","april","may","june")
   result=NA
-  for(a in 1:9){
+  for(a in 1:length(month)){
     url<-paste0(schedule_url,year,"_games-",month[a],".html&div=div_schedule")
     table<-htmltab(url)
     result=rbind(result,table)}
   result<-result %>% 
     drop_na() %>%
-    select(-V2) %>%
     filter(Date !="Playoffs")
   names(result)[3]<-"Visitor"
-  names(result)[4]<-"PTSH"
+  names(result)[4]<-"PTSV"
   names(result)[5]<-"Home"
-  names(result)[6]<-"PTSV"
-  result$Date<-as.Date(schedule_2017$Date, '%a, %b %d, %Y')
+  names(result)[6]<-"PTSH"
+  result$Date<-as.Date(result$Date, '%a, %b %d, %Y')
+  result$PTSH<-as.numeric(result$PTSH)
+  result$PTSV<-as.numeric(result$PTSV)
   return(result)
-}
+    }
+  }
+  }
 
-schedule_2017<-schedule_table(2017)
+
+schedule_2016<-schedule_table(2016)
+
+a<-left_join(schedule_2017,NBAOdds20072018Update, by=c("Date", "Visitor","Home","PTSH","PTSV"))
+
 
 #webscape standings for east or west conference and clean it.
 webscrape_standings<-function(year,conference){
