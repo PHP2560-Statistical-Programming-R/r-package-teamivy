@@ -1,19 +1,15 @@
 \name{Schedule.Rd}
 \alias{Schedule.Rd}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
+\title{Get the NBA schedule for a specified season}
+\description{This function webscrapes the NBA schedule from BBR}
 \usage{
 schedule_table(year)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{year}{
-year is numeric. The year of the data table. 
+year is numeric. The year of the data table. The year is four digit as YYYY.
 }
 }
 \details{
