@@ -1,22 +1,14 @@
 \name{Standings.Rd}
 \alias{Standings.Rd}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-%%  ~~function to do ... ~~
-}
-\description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
-}
-\usage{
-webscrape_standings(year,conference)
-}
-%- maybe also 'usage' for other objects documented here.
+\title{Get the standings for a conference in specified season}
+\description{This function webscrapes the NBA standings from BBR}
+\usage{webscrape_standings(year,conference)}
 \arguments{
   \item{year}{
-  year is numeric. The year of the data table.
+  year is numeric. The year is four digit as YYYY.
 }
   \item{conference}{
-  conference is a character. W represents west conference, and E represents east conference.
+  conference is a character. "W" represents west conference, and "E" represents east conference.
 }
 }
 \details{
