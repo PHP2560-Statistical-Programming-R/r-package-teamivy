@@ -35,12 +35,12 @@ For picture examples of what each section in the glossary maps to on the website
 
 Subsections, can be selected from a particular heading, such as the "franchise" the Boston Celtics. See example:
 ```{r}
-(https://github.com/PHP2560-Statistical-Programming-R/r-package-teamivy/blob/master/NBA%20picture.PNG)
+![Subheading example from website](r-package-teamivy/Franchise page.PNG)\
 ```
 
 Lastly, the list of statistic tables avilable which are pulled directly from the website. See example:
 ```{r}
-![Table example from website](C:/Users/Teresa DeAtley/Pictures/Table example)
+![Table example from website](r-package-teamivy/Table example.PNG)\
 ```
 
 
