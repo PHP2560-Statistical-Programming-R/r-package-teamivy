@@ -15,13 +15,13 @@ NBA stats is a package that pulls live NBA statistics from the website https://w
 
 In addition to pulling team statistics, directly off of the web, betting fucntions have been added to pull from the live NBA statistics to allow individuals to specify by team the odds of winning. 
 
-*1.The first part of the package scrapes from all the webpages
+1.The first part of the package scrapes from all the webpages
 
-*2.The second part combines all the scaped tables
+2.The second part combines all the scaped tables
 
-*3.The third part cleans all the data
+3.The third part cleans all the data
 
-*4.The fourth part loads the betting function
+4.The fourth part loads the betting function
 
 
 A glossary of the the statistics that are available here:
