@@ -22,9 +22,6 @@ In addition to pulling team statistics, directly off of the web, betting fucntio
 
 
 A glossary of the the statistics that are available here:
-```{r}
-https://github.com/PHP2560-Statistical-Programming-R/r-package-teamivy/Tablesforwebscraping.docx
-```
 
 For picture examples of what each section in the glossary maps to on the website see the following sections below:
 
