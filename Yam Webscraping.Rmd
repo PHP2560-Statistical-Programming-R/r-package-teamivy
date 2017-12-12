@@ -17,12 +17,14 @@ library(tidyr)
 library(lubridate)
 library(dplyr)
 library(stringr)
+library(tibble)
+library(XML)
 options(tibble.width = Inf)
 ```
 
 ##Advanced PBP
 ```{r}
-AdvancedPBP <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced")
+AdvancedPBP <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced", which = 1)
 
 head(AdvancedPBP)
 
@@ -34,6 +36,55 @@ AdvancedPBP <- AdvancedPBP %>%
 head(AdvancedPBP)
 
 ```
+
+##Try another way
+```{r}
+#Read the webpage which is just html code for the widget
+thepage <-  readLines('https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced')
+
+#Convert the webpage into an easily subsettable tibble
+thepage.tib <- as.tibble(thepage) 
+
+#Find the row including the data table
+temp.text <- thepage.tib[104,] #This stores as a list
+
+#Read the html code as a data table
+AdvancedPBP <- htmltab(temp.text[[1]], which =1 ) #Call the data table element in the list 
+
+#Format the data table
+AdvancedPBP <- AdvancedPBP %>% 
+  mutate(Team = "BOS") %>% 
+  rename(Player = V1) %>% 
+  dplyr::select(-Rk)
+
+head(AdvancedPBP)
+
+
+funct.AdvancedPBP <- function(team, year){
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F",
+                     team, "%2F", year, ".html&div=div_advanced")
+  thepage <-  readLines(urltable)
+  #Convert the webpage into an easily subsettable tibble
+  thepage.tib <- as.tibble(thepage) 
+
+  #Find the row including the data table
+  temp.text <- thepage.tib[104,] #This stores as a list
+
+  #Read the html code as a data table
+  AdvancedPBP <- htmltab(temp.text[[1]], which =1 ) #Call the data table element in the list 
+
+  #Format the data table
+  AdvancedPBP <- AdvancedPBP %>% 
+    mutate(Team = team) %>% 
+    rename(Player = V1) %>% 
+    dplyr::select(-Rk)
+  return(AdvancedPBP)
+}
+
+AdvancedPBP <- funct.AdvancedPBP("CLE", "2017")
+head(AdvancedPBP)
+```
+
 
 ##Salary
 ```{r}
