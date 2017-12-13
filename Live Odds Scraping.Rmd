@@ -300,7 +300,10 @@ funct.team.sched <- function(team){
   names(schedule.team)[10] <- "TeamPoints"
   names(schedule.team)[11] <- "OppPoints"
   
-  schedule.team <- schedule.team[, c(-1, -4, -5, -9, -15)] %>% 
+  schedule.team <- schedule.team[, c(-1, -4, -5, -9, -15)] 
+  
+  teamname <- AbrevToName(team)
+  schedule.team <- schedule.team %>% 
     mutate(Team = team)
   
   schedule.team <- schedule.team %>% 
