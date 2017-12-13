@@ -16,22 +16,23 @@ schedule_table<-function(year){
       month=c("october","november","december","january","february",
               "march","april","may","june")
       result=NA
-      #Combine the schedule of each month
       for(a in 1:length(month)){
-        url<-paste0(schedule_url,year,"_games-",month[a],".html&div=div_schedule")
-        table<-htmltab(url)
+        url<-readLines(paste0(schedule_url,year,"_games-",month[a],
+                              ".html&div=div_schedule"))
+        thepage.tib<-as_tibble(url)
+        temp.text<-thepage.tib[104,]
+        print(temp.text)
+        table<-htmltab(temp.text[[1]], which=1,rm_nodata_cols = F)
         result=rbind(result,table)}
-      #Clean up the table
-      result<-result %>% 
-        drop_na() %>%
-        filter(Date !="Playoffs")
       names(result)[3]<-"Visitor"
       names(result)[4]<-"PTSV"
       names(result)[5]<-"Home"
       names(result)[6]<-"PTSH"
+      names(result)[7]<-"Box"
+      names(result)[8]<-"OT"
+      result<-result %>% 
+        filter(Date !="Playoffs")
       result$Date<-as.Date(result$Date, '%a, %b %d, %Y')
-      result$PTSH<-as.numeric(result$PTSH)
-      result$PTSV<-as.numeric(result$PTSV)
       return(result)
     }
   }
