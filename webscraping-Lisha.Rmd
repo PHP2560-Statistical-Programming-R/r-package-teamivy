@@ -24,6 +24,7 @@ standing_url<-"https://www.basketball-reference.com/leagues/NBA_"
 opgs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
 ops_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
 
+
 #schedule
 schedule_table<-function(year){
   if(year>2018){
@@ -39,26 +40,29 @@ schedule_table<-function(year){
           "march","april","may","june")
   result=NA
   for(a in 1:length(month)){
-    url<-paste0(schedule_url,year,"_games-",month[a],".html&div=div_schedule")
-    table<-htmltab(url)
+    url<-readLines(paste0(schedule_url,year,"_games-",month[a],
+                          ".html&div=div_schedule"))
+    thepage.tib<-as_tibble(url)
+    temp.text<-thepage.tib[104,]
+    print(temp.text)
+    table<-htmltab(temp.text[[1]], which=1,rm_nodata_cols = F)
     result=rbind(result,table)}
-  result<-result %>% 
-    drop_na() %>%
-    filter(Date !="Playoffs")
   names(result)[3]<-"Visitor"
   names(result)[4]<-"PTSV"
   names(result)[5]<-"Home"
   names(result)[6]<-"PTSH"
+  names(result)[7]<-"Box"
+  names(result)[8]<-"OT"
+  result<-result %>% 
+    filter(Date !="Playoffs")
   result$Date<-as.Date(result$Date, '%a, %b %d, %Y')
-  result$PTSH<-as.numeric(result$PTSH)
-  result$PTSV<-as.numeric(result$PTSV)
   return(result)
     }
   }
   }
 
-
 schedule_2016<-schedule_table(2016)
+
 
 a<-left_join(schedule_2017,NBAOdds20072018Update, by=c("Date", "Visitor","Home","PTSH","PTSV"))
 
@@ -125,7 +129,25 @@ labs <- data.frame(
   ) 
 
 usa_map+ 
-  geom_point(data = labs, aes(x = long, y = lat), color = "black", size = 3,) +
+  geom_point(data = labs, aes(x = long, y = lat), color = "black", size = 3) +
   geom_point(data = labs, aes(x = long, y = lat), color = "red", size = 2)+
   geom_text_repel(data=labs, aes(x=long, y=lat,label = Home),alpha=1,size=3)
 ```
+
+```{r}
+thepage <-  readLines('https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_2016_games-october.html&div=div_schedule')
+
+#Convert the webpage into an easily subsettable tibble
+thepage.tib <- as_tibble(thepage) 
+
+#Find the row including the data table
+temp.text <- thepage.tib[104,] #This stores as a list
+
+#Read the html code as a data table
+AdvancedPBP <- htmltab(temp.text[[1]], which =1 ) #Call the data table element in the list 
+
+schedule_2016<-schedule_2016 %>% 
+    drop_na() %>%
+    filter(Date !="Playoffs")
+```
+
