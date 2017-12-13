@@ -81,7 +81,7 @@ SpreadsTable$TeamAwayCity <- str_match(SpreadsTable$Team, patternteam)
 SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam, "")
 
 #Team Away
-patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
 SpreadsTable$TeamAway <- str_match(SpreadsTable$Team, patternteam2)
 SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam2, "")
 
@@ -148,7 +148,7 @@ MoneyLineTable$TeamAwayCity <- str_match(MoneyLineTable$Team, patternteam)
 MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam, "")
 
 #Team Away
-patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
 MoneyLineTable$TeamAway <- str_match(MoneyLineTable$Team, patternteam2)
 MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam2, "")
 
@@ -216,7 +216,7 @@ OverUnderTable$TeamAwayCity <- str_match(OverUnderTable$Team, patternteam)
 OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam, "")
 
 #Team Away
-patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
 OverUnderTable$TeamAway <- str_match(OverUnderTable$Team, patternteam2)
 OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam2, "")
 
@@ -271,16 +271,120 @@ return(BettingTable)
   
 }
 
-DailyOdds("20151206")
+DailyOdds("20171212")
 
 ```
 
+##Create a function to take individual team's schedules
+```{r}
+urltable <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018_games.html&div=div_games"
+
+funct.team.sched <- function(team) {
+  team <- paste(team)
+  urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F",
+                     team, "%2F", "2018", ".html&div=div_advanced")
+  thepage <-  readLines(urltable)
+  #Convert the webpage into an easily subsettable tibble
+  thepage.tib <- as.tibble(thepage) 
+  #Find the row including the data table
+  temp.text <- thepage.tib[104,] #This stores as a list
+  #Read the html code as a data table
+  schedule.team <- htmltab(temp.text[[1]], which =1, rm_nodata_cols = F) #Call the data table element in   the list 
+  
+  schedule.team <- schedule.team[, c(-1, -4, -5, -9, -15)] %>% 
+    mutate(Team = team)
+  
+  names(schedule.team)[2] <- "Time"
+  names(schedule.team)[3] <- "Home"
+  names(schedule.team)[5] <- "Result"
+  names(schedule.team)[6] <- "TeamPoints"
+  names(schedule.team)[7] <- "OppPoints"
+  
+  
+  schedule.team <- schedule.team %>% 
+    mutate(Date = as.Date(Date, '%a, %b %d, %Y'),
+           Home = ifelse(is.na(Home), 1, 0))
+   return(schedule.team) 
+}
+
+funct.team.sched("BOS")
+head(schedule.team)
+  
+```
+
+
+
 ##Create some functions
 ```{r}
-
 NBAOdds <- read.csv()
+
+urltable <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018_games.html&div=div_games"
+
+table.s <- htmltab(url)
+head(table.s)
+
+
+
+
+
+
+
 find_previous_matchups <- function(Team1, Team2) {
+  url <- "https://www.basketball-reference.com/teams/BOS/2018_games.html"
   
+  url<-paste0("https://www.basketball-reference.com/teams/", Team1, "/2018_games.html")
+  table.sc<-htmltab(url)
+  table.sc <- table.sc %>% 
+        drop_na() %>%
+        filter(Date !="Playoffs")
+      names(result)[3]<-"Visitor"
+      names(result)[4]<-"PTSV"
+      names(result)[5]<-"Home"
+      names(result)[6]<-"PTSH"
+      result$Date<-as.Date(result$Date, '%a, %b %d, %Y')
+      result$PTSH<-as.numeric(result$PTSH)
+      result$PTSV<-as.numeric(result$PTSV)
+      return(result)
+}
+
+schedule_table("2017")
+#schedule
+
+schedule_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_"
+
+#schedule
+schedule_table<-function(year){
+  if(year>2018){
+    print("The season doesn't start")
+  }else if(year<2001){
+    print("The season isn't included")
+  }else{
+    if(year==2012){
+      month=c("december","january","february",
+              "march","april","may","june")
+    }else{
+      month=c("october","november","december","january","february",
+              "march","april","may","june")
+      result=NA
+      #Combine the schedule of each month
+      for(a in 1:length(month)){
+        url<-paste0(schedule_url,year,"_games-",month[a],".html&div=div_schedule")
+        table<-htmltab(url)
+        result=rbind(result,table)}
+      #Clean up the table
+      result<-result %>% 
+        drop_na() %>%
+        filter(Date !="Playoffs")
+      names(result)[3]<-"Visitor"
+      names(result)[4]<-"PTSV"
+      names(result)[5]<-"Home"
+      names(result)[6]<-"PTSH"
+      result$Date<-as.Date(result$Date, '%a, %b %d, %Y')
+      result$PTSH<-as.numeric(result$PTSH)
+      result$PTSV<-as.numeric(result$PTSV)
+      return(result)
+    }
+  }
 }
 
 ```
@@ -288,7 +392,7 @@ find_previous_matchups <- function(Team1, Team2) {
 ##Spreads Tables
 ```{r}
 
-url <-  "http://www.donbest.com/nba/odds/spreads/20171206.html"
+url <-  "http://www.donbest.com/nba/odds/spreads/20171212.html"
 
 SpreadsTable <- url %>%
     read_html %>%
@@ -335,12 +439,12 @@ SpreadsTable$Mirage <- sub("\\s+", "", SpreadsTable$Mirage)
 #Teams
 
 #Team Away City
-patternteam <- str_c("((^[:upper:][:lower:]+)[:blank:][:upper:][:lower:]+[:blank:])|((^[:upper:][:lower:]+)[:blank:])")
+patternteam <- str_c("((^[:upper:][:lower:]+)[:blank:][:upper:][:lower:]+[:blank:])|((^[:upper:][:lower:]+)[:blank:])|((^[:upper:][:lower:]+)[:blank:])")
 SpreadsTable$TeamAwayCity <- str_match(SpreadsTable$Team, patternteam)
 SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam, "")
 
 #Team Away
-patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
 SpreadsTable$TeamAway <- str_match(SpreadsTable$Team, patternteam2)
 SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam2, "")
 
@@ -412,7 +516,7 @@ MoneyLineTable$TeamAwayCity <- str_match(MoneyLineTable$Team, patternteam)
 MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam, "")
 
 #Team Away
-patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
 MoneyLineTable$TeamAway <- str_match(MoneyLineTable$Team, patternteam2)
 MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam2, "")
 
@@ -487,7 +591,7 @@ OverUnderTable$TeamAwayCity <- str_match(OverUnderTable$Team, patternteam)
 OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam, "")
 
 #Team Away
-patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
 OverUnderTable$TeamAway <- str_match(OverUnderTable$Team, patternteam2)
 OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam2, "")
 
