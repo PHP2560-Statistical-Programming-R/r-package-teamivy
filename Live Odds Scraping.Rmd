@@ -19,6 +19,7 @@ library(dplyr)
 library(stringr)
 library(stringi)
 library(rebus)
+library(tibble)
 options(tibble.width = Inf)
 ```
 
@@ -279,10 +280,12 @@ DailyOdds("20171212")
 ```{r}
 urltable <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018_games.html&div=div_games"
 
-funct.team.sched <- function(team) {
+ 
+##Work on a function with these lines after
+funct.team.sched <- function(team){
   team <- paste(team)
   urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F",
-                     team, "%2F", "2018", ".html&div=div_advanced")
+                     team, "%2F2018_games.html&div=div_games")
   thepage <-  readLines(urltable)
   #Convert the webpage into an easily subsettable tibble
   thepage.tib <- as.tibble(thepage) 
@@ -291,20 +294,20 @@ funct.team.sched <- function(team) {
   #Read the html code as a data table
   schedule.team <- htmltab(temp.text[[1]], which =1, rm_nodata_cols = F) #Call the data table element in   the list 
   
+  names(schedule.team)[3] <- "Time"
+  names(schedule.team)[6] <- "Home"
+  names(schedule.team)[8] <- "Result"
+  names(schedule.team)[10] <- "TeamPoints"
+  names(schedule.team)[11] <- "OppPoints"
+  
   schedule.team <- schedule.team[, c(-1, -4, -5, -9, -15)] %>% 
     mutate(Team = team)
   
-  names(schedule.team)[2] <- "Time"
-  names(schedule.team)[3] <- "Home"
-  names(schedule.team)[5] <- "Result"
-  names(schedule.team)[6] <- "TeamPoints"
-  names(schedule.team)[7] <- "OppPoints"
-  
-  
   schedule.team <- schedule.team %>% 
+    filter(Opponent != "Opponent") %>% 
     mutate(Date = as.Date(Date, '%a, %b %d, %Y'),
            Home = ifelse(is.na(Home), 1, 0))
-   return(schedule.team) 
+  return(schedule.team)
 }
 
 funct.team.sched("BOS")
@@ -312,7 +315,32 @@ head(schedule.team)
   
 ```
 
+##Create a function to find the last 5 matchups
+```{r}
 
+funct.matchups <- function(team, Team2){
+  Matchups <- funct.team.sched(team)
+  Matchups <- Matchups %>% 
+    filter(Opponent == Team2 & !is.na(Result))
+  return(Matchups)
+}
+
+funct.matchups("CLE", "Boston Celtics")
+
+```
+
+##Create a function to go from name to abbreviation
+```{r}
+AbrevToName <- function(Abbreviation) {
+  if(str_length(Abbreviation) != 3 ) {
+    print("You must enter the three letter abbreviation for this team in a string.")
+  }
+  else {
+    
+  }
+}
+
+```
 
 ##Create some functions
 ```{r}
