@@ -8,5 +8,16 @@ Description: Webscrapes tables from basketball_reference live for you without ha
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
-Imports: devtools::use_package("dplyr, "ggplot2", "stringr", "tibble", "lubridate", "rvest", "xml2", "readxl", "tidyr", "stringi", "rebus")
+Imports: 
+dplyr, 
+ggplot2, 
+stringr, 
+tibble, 
+lubridate, 
+rvest, 
+xml2, 
+readxl, 
+tidyr, 
+stringi, 
+rebus
 
