@@ -1,7 +1,7 @@
 
 
 DailyOdds <- function(Date = "20171206"){
-  if(ymd(Date) > today() +1) {
+  if(lubridate::ymd(Date) > today() +1) {
     print("Sorry, the betting lines not set yet! Lines are only released for today and the following day. Check back again!")
   } else {
     ##Spreads Tables
@@ -240,7 +240,7 @@ DailyOdds <- function(Date = "20171206"){
              WP.H = (WP.HB + (1-WP.VB))/2,
              WP.V = 1 - WP.H)  %>%
       select(-WP.HB, -WP.VB) %>%
-      mutate(Date = ymd(Date))
+      mutate(Date = lubridate::ymd(Date))
     return(BettingTable)
   }
 
