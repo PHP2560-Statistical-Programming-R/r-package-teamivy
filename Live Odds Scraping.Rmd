@@ -100,7 +100,7 @@ SpreadsTable <- SpreadsTable %>%
 
 SpreadsTable <- SpreadsTable %>% 
   select(Team, Time, Bovada, Pinnacle, Mirage, Rot1, Rot2, OSAway, Away) %>% 
-  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+  dplyr::rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
 
 #MoneyLine Table
 url.ML <- paste0("http://www.donbest.com/nba/odds/money-lines/", Date, ".html")
@@ -176,7 +176,7 @@ MoneyLineTable <- MoneyLineTable %>%
 
 MoneyLineTable <- MoneyLineTable %>% 
   select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>% 
-  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+  dplyr::rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
 
 url.OU <- paste0("http://www.donbest.com/nba/odds/totals/", Date, ".html")
 
@@ -239,13 +239,13 @@ OverUnderTable <- OverUnderTable %>%
 
 OverUnderTable <- OverUnderTable %>% 
   select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>% 
-  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+  dplyr::rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
 
 BettingTable <- left_join(SpreadsTable, MoneyLineTable, by = c("Home", "Away", "Time", "RotAway", "RotHome")) %>% 
   left_join(OverUnderTable, by = c("Home", "Away", "Time", "RotAway", "RotHome"))
 
 BettingTable <- BettingTable[, c(1, 9, 2:8, 10:21)] %>% 
-  rename(BovadaAwayS = Bovada,
+  dplyr::rename(BovadaAwayS = Bovada,
          PinnacleAwayS = Pinnacle,
          MirageAwayS = Mirage,
          OpenerAwayS = OSAway)
@@ -493,7 +493,7 @@ SpreadsTable <- SpreadsTable %>%
 
 SpreadsTable <- SpreadsTable %>% 
   select(Team, Time, Bovada, Pinnacle, Mirage, Rot1, Rot2, OSAway, Away) %>% 
-  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+  dplyr::rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
 ```
 
 ##MoneyLine Tables
@@ -573,7 +573,7 @@ MoneyLineTable <- MoneyLineTable %>%
 
 MoneyLineTable <- MoneyLineTable %>% 
   select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>% 
-  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+  dplyr::rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
 
 head(MoneyLineTable)
 ```
@@ -645,7 +645,7 @@ OverUnderTable <- OverUnderTable %>%
 
 OverUnderTable <- OverUnderTable %>% 
   select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>% 
-  rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+  dplyr::rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
 
 head(OverUnderTable)
 
@@ -661,7 +661,7 @@ BettingTable <- left_join(SpreadsTable, MoneyLineTable, by = c("Home", "Away", "
   left_join(OverUnderTable, by = c("Home", "Away", "Time", "RotAway", "RotHome"))
 
 BettingTable <- BettingTable[, c(1, 9, 2:8, 10:21)] %>% 
-  rename(BovadaAwayS = Bovada,
+  dplyr::rename(BovadaAwayS = Bovada,
          PinnacleAwayS = Pinnacle,
          MirageAwayS = Mirage,
          OpenerAwayS = OSAway)
