@@ -9,3 +9,6 @@ Also, includes betting data so that people can run their own betting analyses.
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Imports: devtools::usepackage("dplyr, "ggplot", "stringr", "tibble", "lubridate",
+"rvest", "xml2", "readxl", "tidyr", "stringi", "rebus")
+
