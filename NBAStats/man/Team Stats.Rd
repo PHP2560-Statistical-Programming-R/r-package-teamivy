@@ -2,7 +2,7 @@
 \alias{Team Stats}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+Get the stats for a given team
 }
 \description{
 Creates a table with desired regular season NBA statistic from the past 10 years.%%  ~~ A concise (1-5 lines) description of what the function does. ~~
@@ -43,3 +43,4 @@ Team Stats(team, year, element)
 }
 \examples{
 get.team("CLE", "2015", "contracts")
+}

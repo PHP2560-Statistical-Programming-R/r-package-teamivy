@@ -2,7 +2,7 @@
 \alias{Playoffs Stats}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-%%  ~~function to do ... ~~
+get the playoff stats
 }
 \description{
 Creates a table with desired NBA playoffs statistic from the past 10 years.%%  ~~ A concise (1-5 lines) description of what the function does. ~~
@@ -43,4 +43,4 @@ Playoffs Stats(year, type, table)
 }
 \examples{
 get.playoffs("2017", "games", "schedule")
-
+}
