@@ -13,11 +13,11 @@ Imports:
   ggplot2 (> 0.1), 
   stringr (> 0.1), 
   tibble (> 0.1), 
-  lubridate (> 0.1), 
   rvest (> 0.1), 
   xml2 (> 0.1), 
   readxl (> 0.1), 
   tidyr (> 0.1), 
   stringi (> 0.1), 
-  rebus (> 0.1)
+  rebus (> 0.1),
+  lubridate (> 1.3),
 
