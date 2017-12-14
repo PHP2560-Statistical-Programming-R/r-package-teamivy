@@ -1,11 +1,19 @@
-\name{Standings.Rd}
-\alias{Standings.Rd}
-\title{Get the standings for a specified season}
-\description{This function webscrapes the NBA standings from BBR}
-\usage{webscrape_standings(year)}
+\name{ScheduleMap}
+\alias{ScheduleMap}
+%- Also NEED an '\alias' for EACH other topic documented here.
+\title{
+Show a game night schedule on map
+}
+\description{
+The cities that have games on specified date will show up on the USA map
+}
+\usage{
+ScheduleMap(date)
+}
+%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{year}{
-  year is numeric. The year is four digit as YYYY.
+  \item{date}{
+date is a character in the format "YYYY-MM-DD"
 }
 }
 \details{
@@ -34,13 +42,13 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-webscrape_standings(2017)
+schedule_map("2016-11-21")
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (x)
+function (x) 
 {
   }
 }

@@ -24,8 +24,9 @@ GetLastMatchups(team, Team2, n = 5)
 GetLastMatchups("BOS", "CLE", 5)
 GetTeamSchedule("Boston Celtics", "CLE", 10)
 }
+
 \keyword{Matchups}
 \keyword{Team}
-\keywork{Results}
+\keyword{Results}
 \keyword{Seasons}
 
