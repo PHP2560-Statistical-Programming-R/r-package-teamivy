@@ -1,0 +1,74 @@
+---
+title: "Constructing a Win Probability Model"
+author: "Derrick Yam"
+date: "December 14, 2017"
+output: html_document
+---
+
+##Load Libraries
+```{r}
+library(rvest)
+library(pipeR)
+library(knitr)
+library(xml2)
+library(htmltab)
+library(readxl)
+library(tidyr)
+library(lubridate)
+library(dplyr)
+library(stringr)
+library(tibble)
+library(XML)
+options(tibble.width = Inf)
+```
+
+
+##Pull in Team Schedules
+```{r}
+#schedule
+
+schedule_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_"
+
+#schedule
+schedule_table<-function(year){
+  if(year>2018){
+    print("The season doesn't start")
+  }else if(year<2001){
+    print("The season isn't included")
+  }else{
+    if(year==2012){
+      month=c("december","january","february",
+              "march","april","may","june")
+    }else if(year==2006|year==2005){
+      month=c("november","december","january","february",
+              "march","april","may","june")
+    }else if(year==2018){
+      month=c("october","november","december","january","february",
+              "march","april")
+    }else{
+      month=c("october","november","december","january","february",
+              "march","april","may","june")
+    }
+    result=NA
+    for(a in 1:length(month)){
+      url<-readLines(paste0(schedule_url,year,"_games-",month[a],
+                            ".html&div=div_schedule"))
+      thepage.tib<-as_tibble(url)
+      temp.text<-thepage.tib[104,]
+      table<-htmltab(temp.text[[1]], which=1,rm_nodata_cols = F)
+      result=rbind(result,table)}
+    names(result)[3]<-"Visitor"
+    names(result)[4]<-"PTSV"
+    names(result)[5]<-"Home"
+    names(result)[6]<-"PTSH"
+    names(result)[7]<-"Box"
+    names(result)[8]<-"OT"
+    result<-result %>% 
+      filter(Date !="Playoffs")
+    result$Date<-as.Date(result$Date, '%a, %b %d, %Y')
+    return(result)
+  }
+}
+
+schedule_table("2018")
+```
