@@ -139,7 +139,7 @@ if(m>9&&m<13){
 }else if(m<7&&m>0){
   today<-schedule_table(as.numeric(substr(date, 1, 4)))
 }else{
-  return(NA)
+  return(usa_map)
 }
 today<-schedule_table(as.numeric(substr(date, 1, 4))+1)
 today<-today %>%
@@ -154,7 +154,7 @@ map<-usa_map+
 return(map)
 }
 
-schedule_map("2016-10-21")
+schedule_map("2016-11-21")
 ```
 
 ```{r}
