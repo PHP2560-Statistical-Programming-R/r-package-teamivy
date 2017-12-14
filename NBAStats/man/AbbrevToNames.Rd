@@ -16,9 +16,9 @@ AbbrevToNames(Abbrev)
 \details{
 }
 \value{\item{string}{Returns the NBA franchise in a character string.}}
-\\examples{
+\examples{
 AbbrevToNames("BOS")
-
+}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{Names}% use one of  RShowDoc("KEYWORDS")

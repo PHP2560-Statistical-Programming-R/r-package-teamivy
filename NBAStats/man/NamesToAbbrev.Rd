@@ -15,9 +15,9 @@ NamesToAbbrev(Name)
 \details{
 }
 \value{\item{string}{Returns the three letter abbreviation in a character string.}}
-\\examples{
+\examples{
 NamesToAbbrev("Boston Celtics")
-
+}
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{Names}% use one of  RShowDoc("KEYWORDS")
