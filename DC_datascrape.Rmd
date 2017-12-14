@@ -109,3 +109,92 @@ get.playoffs <- function(year, type, table) {
 test1 <- get.playoffs("2017", "games", "schedule")
 ```
 
+```{r}
+playoffs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
+
+get.playoffs <- function(year, type, table) {
+  if (type == "games") {
+    urltable <- paste0(playoffs_url, year, "_", type, ".html&div=div_", table)
+    urltibble <- as.tibble(urltable)
+    temp.text <- urltibble[104,]
+    table <- htmltab(temp.text[[1]], which =1 )
+    names(table)[names(table) == "Visitor/Neutral"] <- "Away"
+    names(table)[names(table) == "Home/Neutral"] <- "Home"
+    names(table)[names(table) == "PTS"] <- "PTS Away"
+    names(table)[names(table) == "PTS.1"] <- "PTS Home"
+    table <- table[,-7]
+  } else if ((type == "per_game") || (type == "advanced")) {
+    urltable <- paste0(playoffs_url, year, "_", type, ".html&div=div_", table)
+    urltibble <- as.tibble(urltable)
+    temp.text <- urltibble[104,]
+    table <- htmltab(temp.text[[1]], which =1 )
+    table <- htmltab(urltable)
+    table <- table[,-1]
+  } else {
+    urltable <- paste0(playoffs_url,year,".html&div=div_", table)
+    urltibble <- as.tibble(urltable)
+    temp.text <- urltibble[104,]
+    table <- htmltab(temp.text[[1]], which =1 )
+    table <- htmltab(urltable)
+    table <- table[,-1]
+  }
+  return(table)
+}
+```
+
+```{r}
+#Read the webpage which is just html code for the widget
+thepage <-  readLines('https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced')
+
+#Convert the webpage into an easily subsettable tibble
+thepage.tib <- as.tibble(thepage) 
+
+#Find the row including the data table
+temp.text <- thepage.tib[104,] #This stores as a list
+
+#Read the html code as a data table
+AdvancedPBP <- htmltab(temp.text[[1]], which =1 ) #Call the data table element in the list 
+
+#Format the data table
+AdvancedPBP <- AdvancedPBP %>% 
+  mutate(Team = "BOS") %>% 
+  rename(Player = V1) %>% 
+  dplyr::select(-Rk)
+
+head(AdvancedPBP)
+
+```
+
+```{r}
+playoffs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
+
+get.playoffs <- function(year, type, table) {
+  if (type == "games") {
+    urltable <- paste0(playoffs_url, year, "_", type, ".html&div=div_", table)
+    playoffspage <- readLines(urltable)
+    playoffs.tib <- as.tibble(playoffspage)
+    temp.text <- playoffs.tib[104,] #This stores as a list
+    table <- htmltab(temp.text[[1]], which =1, rm_nodata_cols = F)
+    names(table)[names(table) == "Visitor/Neutral"] <- "Away"
+    names(table)[names(table) == "Home/Neutral"] <- "Home"
+    names(table)[names(table) == "PTS"] <- "PTS Away"
+    names(table)[names(table) == "PTS.1"] <- "PTS Home"
+    table <- table[,-7:-9]
+  } else if ((type == "per_game") || (type == "advanced")) {
+    urltable <- paste0(playoffs_url, year, "_", type, ".html&div=div_", table)
+    playoffspage <- readLines(urltable)
+    playoffs.tib <- as.tibble(playoffspage)
+    temp.text <- playoffs.tib[104,] #This stores as a list
+    table <- htmltab(temp.text[[1]], which =1, rm_nodata_cols = F)
+    table <- table %>% select(-Rk) %>% filter(Player != "Player")
+  } else {
+    urltable <- paste0(playoffs_url,year,".html&div=div_", table)
+    playoffspage <- readLines(urltable)
+    playoffs.tib <- as.tibble(playoffspage)
+    temp.text <- playoffs.tib[104,] #This stores as a list
+    table <- htmltab(temp.text[[1]], which =1, rm_nodata_cols = F)
+  }
+  return(table)
+}
+
+```
