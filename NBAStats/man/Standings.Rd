@@ -8,7 +8,6 @@
   year is numeric. The year is four digit as YYYY.
 }
 }
-}
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
@@ -41,7 +40,7 @@ webscrape_standings(2017)
 ##--	or do  help(data=index)  for the standard data sets.
 
 ## The function is currently defined as
-function (x) 
+function (x)
 {
   }
 }
