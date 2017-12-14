@@ -91,8 +91,12 @@ standings_2017<-webscrape_standings(2017)
 
 #opponent per game stats
 opsg_table <- function(year){
-  url<-paste0(opgs_url,year,".html&div=div_opponent-stats-per_game")
-  table<-htmltab(url)
+  url<-readLines(paste0(opgs_url,year,".html&div=div_opponent-stats-per_game"))
+  thepage.tib <- as_tibble(url) 
+  #Find the row including the data table
+  temp.text <- thepage.tib[104,] #This stores as a list
+  #Read the html code as a data table
+  table <- htmltab(temp.text[[1]], which =1 ) #Call the data table element 
   return(table)
 }
 
@@ -100,12 +104,17 @@ opsg<-opsg_table(2017)[-1]
 
 #opponent shooting
 ops_table<-function(year){
-  url<-paste0(ops_url,year,".html&div=div_opponent_shooting")
-  table<-htmltab(url)
+  url<-readLines(paste0(ops_url,year,".html&div=div_opponent_shooting"))
+  thepage.tib <- as_tibble(url) 
+  #Find the row including the data table
+  temp.text <- thepage.tib[104,] #This stores as a list
+  #Read the html code as a data table
+  table <- htmltab(temp.text[[1]], which =1 ) #Call the data table element 
+  table<-table[-1]
   return(table)
 }
 
-ops<-ops_table(2017)[-1]
+ops<-ops_table(2017)
 
 ```
 
@@ -154,7 +163,7 @@ map<-usa_map+
 return(map)
 }
 
-schedule_map("2016-11-21")
+schedule_map("2017-12-14")
 ```
 
 ```{r}
