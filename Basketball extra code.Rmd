@@ -1,0 +1,482 @@
+---
+title: "Unused code_basketball"
+author: "Teresa DeAtley"
+date: "December 6, 2017"
+output: html_document
+---
+
+```{r}
+
+
+#head(Playoff_schedule)
+
+#Playoff_schedule <- Playoff_schedule %>% 
+ # mutate(Team = "BOS") %>% 
+  #rename(Player = V1) %>% 
+  #dplyr::select(-Rk)
+
+#head(Playoff_schedule)
+
+##Write a function to download this table for each year and for each team.
+
+#funct.Playoff_schedule <- function(year){
+  #urltable <- paste0("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_", year, "_games.html&div=div_schedule")
+  
+  
+#Playoff_schedule <- htmltab(urltable) %>% 
+    #mutate(Year = year) %>% 
+   #  rename(Player = V1) %>% 
+    #dplyr::select(-Rk)
+
+  #return(Playoff_schedule)
+#}
+
+#Playoff_schedule <- funct.Playoff_schedule("2016")
+#head(Playoff_schedule)
+
+```
+
+
+
+
+
+
+
+
+
+```{r}
+#http1 <- 'https://www.basketball-reference.com/teams/'
+#http2 <- 'https://www.basketball-reference.com/playoffs/NBA_'
+
+#websrape for each roster and year
+#webscrape_team <- function(team,year,css_page){
+ # a<-substitute(team)
+  #a<-as.character(a)
+  #url<-paste(http1,a,"/",year,".html",sep="")
+ # table<-url %>% 
+  #  read_html()%>% 
+  #  html_nodes(css_page) %>% 
+   # html_table(header = T) %>%
+    #data.frame() %>%
+    #tbl_df()
+ # return(table)
+}
+
+Roster_2017<-webscrape_team(BOS,2017,"#roster")
+```
+
+```{r}
+#websrape for each pergame and year
+webscrape_team <- function(team,year,css_page){
+  a<-substitute(team)
+  a<-as.character(a)
+  url<-paste(http1,a,"/",year,".html",sep="")
+  table<-url %>% 
+    read_html()%>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+  return(table)
+}
+
+Per_game<-webscrape_team(BOS,2017,"#per_game")
+```
+
+
+
+
+```{r}
+#playoff schedule by year
+webscrape_team <- function(year,css_page){
+  url<-paste(http2,year,'_games.html',sep="")
+  table<-url %>% 
+    read_html()%>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+  return(table)
+}
+
+Playoffschedule_2017<-webscrape_team(2010,"#schedule")
+```
+
+```{r}
+
+```
+
+
+```{r}
+#url <- 'https://www.basketball-reference.com/friv/injuries.fcgi' 
+#css_page <- '#injuries' 
+
+#Injuries <- url %>>%
+   # read_html %>>%
+    #html_nodes(css_page) %>>%
+    #html_table(header = T) %>>%
+    #data.frame() %>>%
+    #tbl_df()
+```
+
+```{r}
+url.1 <- 'https://www.basketball-reference.com/teams/BOS/2018.html' 
+css_page <- '#roster' 
+
+Team.1 <- url.1 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.2 <- 'https://www.basketball-reference.com/teams/TOR/2018.html' 
+css_page <- '#roster' 
+
+Team.2 <- url.2 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.3 <- 'https://www.basketball-reference.com/teams/PHI/2018.html' 
+css_page <- '#roster' 
+
+Team.3 <- url.3 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.4 <- 'https://www.basketball-reference.com/teams/BRK/2018.html' 
+css_page <- '#roster' 
+
+Team.4 <- url.4 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.5 <- 'https://www.basketball-reference.com/teams/MIN/2018.html' 
+css_page <- '#roster' 
+
+Team.5 <- url.5 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.6 <- 'https://www.basketball-reference.com/teams/POR/2018.html' 
+css_page <- '#roster' 
+
+Team.6 <- url.6 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.7 <- 'https://www.basketball-reference.com/teams/DEN/2018.html' 
+css_page <- '#roster' 
+
+Team.7 <- url.7 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.8 <- 'https://www.basketball-reference.com/teams/UTA/2018.html' 
+css_page <- '#roster' 
+
+Team.8 <- url.8 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+
+```
+
+```{r}
+url.9 <- 'https://www.basketball-reference.com/teams/OKC/2018.html' 
+css_page <- '#roster' 
+
+Team.9 <- url.9 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.10 <- 'https://www.basketball-reference.com/teams/NYK/2018.html' 
+css_page <- '#roster' 
+
+Team.10 <- url.10 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+
+```
+
+```{r}
+url.11 <- 'https://www.basketball-reference.com/teams/DET/2018.html' 
+css_page <- '#roster' 
+
+Team.11 <- url.11 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.12 <- 'https://www.basketball-reference.com/teams/CLE/2018.html' 
+css_page <- '#roster' 
+
+Team.12 <- url.12 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.13 <- 'https://www.basketball-reference.com/teams/MIL/2018.html' 
+css_page <- '#roster' 
+
+Team.13 <- url.13 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.14 <- 'https://www.basketball-reference.com/teams/IND/2018.html' 
+css_page <- '#roster' 
+
+Team.14 <- url.14 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.15 <- 'https://www.basketball-reference.com/teams/CHI/2018.html' 
+css_page <- '#roster' 
+
+Team.15 <- url.15 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.16 <- 'https://www.basketball-reference.com/teams/GSW/2018.html' 
+css_page <- '#roster' 
+
+Team.16 <- url.16 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.17 <- 'https://www.basketball-reference.com/teams/LAC/2018.html' 
+css_page <- '#roster' 
+
+Team.17 <- url.17 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.18 <- 'https://www.basketball-reference.com/teams/LAL/2018.html' 
+css_page <- '#roster' 
+
+Team.18 <- url.18 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.19 <- 'https://www.basketball-reference.com/teams/PHO/2018.html' 
+css_page <- '#roster' 
+
+Team.19 <- url.19 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.20 <- 'https://www.basketball-reference.com/teams/SAC/2018.html' 
+css_page <- '#roster' 
+
+Team.20 <- url.20 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.21 <- 'https://www.basketball-reference.com/teams/WAS/2018.html' 
+css_page <- '#roster' 
+
+Team.21 <- url.21 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.22 <- 'https://www.basketball-reference.com/teams/MIA/2018.html' 
+css_page <- '#roster' 
+
+Team.22 <- url.22 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.23 <- 'https://www.basketball-reference.com/teams/ORL/2018.html' 
+css_page <- '#roster' 
+
+Team.23 <- url.23 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.24 <- 'https://www.basketball-reference.com/teams/CHO/2018.html' 
+css_page <- '#roster' 
+
+Team.24 <- url.24 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.25 <- 'https://www.basketball-reference.com/teams/ATL/2018.html' 
+css_page <- '#roster' 
+
+Team.25 <- url.25 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.26 <- 'https://www.basketball-reference.com/teams/HOU/2018.html' 
+css_page <- '#roster' 
+
+Team.26 <- url.26 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.27 <- 'https://www.basketball-reference.com/teams/SAS/2018.html' 
+css_page <- '#roster' 
+
+Team.27 <- url.27 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.28 <- 'https://www.basketball-reference.com/teams/NOP/2018.html' 
+css_page <- '#roster' 
+
+Team.28 <- url.28 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.29 <- 'https://www.basketball-reference.com/teams/MEM/2018.html' 
+css_page <- '#roster' 
+
+Team.29 <- url.29 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
+
+```{r}
+url.30 <- 'https://www.basketball-reference.com/teams/DAL/2018.html' 
+css_page <- '#roster' 
+
+Team.30 <- url.30 %>% 
+    read_html %>% 
+    html_nodes(css_page) %>% 
+    html_table(header = T) %>%
+    data.frame() %>%
+    tbl_df()
+```
