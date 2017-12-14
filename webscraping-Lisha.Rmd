@@ -35,16 +35,22 @@ schedule_table<-function(year){
     if(year==2012){
     month=c("december","january","february",
           "march","april","may","june")
-    }else{
-    month=c("october","november","december","january","february",
+    }else if(year==2006|year==2005){
+    month=c("november","december","january","february",
           "march","april","may","june")
+    }else if(year==2018){
+      month=c("october","november","december","january","february",
+          "march","april")
+    }else{
+      month=c("october","november","december","january","february",
+          "march","april","may","june")
+    }
   result=NA
   for(a in 1:length(month)){
     url<-readLines(paste0(schedule_url,year,"_games-",month[a],
                           ".html&div=div_schedule"))
     thepage.tib<-as_tibble(url)
     temp.text<-thepage.tib[104,]
-    print(temp.text)
     table<-htmltab(temp.text[[1]], which=1,rm_nodata_cols = F)
     result=rbind(result,table)}
   names(result)[3]<-"Visitor"
@@ -59,10 +65,9 @@ schedule_table<-function(year){
   return(result)
     }
   }
-  }
 
-schedule_2016<-schedule_table(2016)
-
+schedule_2005<-schedule_table(2005)
+schedule_2018<-schedule_table(2018)
 
 a<-left_join(schedule_2017,NBAOdds20072018Update, by=c("Date", "Visitor","Home","PTSH","PTSV"))
 
@@ -108,6 +113,7 @@ ops<-ops_table(2017)[-1]
 
 #NBA map
 ```{r}
+schedule_map<-function(date){
 usa<-map_data("usa")
 usa_map<-ggplot() + 
   geom_polygon(data = usa, aes(x=long, y = lat, group = group), fill = "yellow", color = "blue") + 
@@ -118,20 +124,39 @@ labs <- data.frame(
            -90.050495,-87.917068,-90.079220,-81.399844,-75.172037,-112.070156,
            -84.392168,-87.674089,-121.499845,-74.016235,-96.815228,-83.055133,
            -80.374820,-97.515083,-111.901235,-80.839322,-105.007694,-73.993407,
-           -98.437370,-95.362091,-118.267233,-93.275882,-77.020959,-79.426987),
+           -98.437370,-95.362091,-118.267233,-93.275882,-77.020959,-79.426987,
+           -90.079220,-122.353806,-74.016235,-90.079220,-80.839235),
   lat = c(37.750427, 34.043169,41.496762, 45.532069, 42.366437,39.764087,
           35.138423,43.043929,29.952573,28.635790,39.901613,33.445462,
           33.757064,41.880867,38.580936,40.659398,32.791563,42.341150,
           25.675423,35.463528,40.768442,35.225210,39.749438,40.750651,
-          29.427211,29.750895,34.043169,44.979680,38.898251,43.634139),
-  Home = c("Golden State Warriors", "Los Angeles Lakers", "Cleveland Cavaliers", "Portland Trail Blazers","Boston Celtics","Indiana Pacers","Memphis Grizzlies","Milwaukee Bucks","New Orleans Pelicans","Orlando Magic","Philadelphia 76ers","Phoenix Suns","Atlanta Hawks","Chicago Bulls","Sacramento Kings","Brooklyn Nets","Dallas Mavericks","Detroit Pistons","Miami Heat","Oklahoma City Thunder","Utah Jazz","Charlotte Hornets","Denver Nuggets","New York Knicks","San Antonio Spurs","Houston Rockets","Los Angeles Clippers","Minnesota Timberwolves","Washington Wizards","Toronto Raptors"),
+          29.427211,29.750895,34.043169,44.979680,38.898251,43.634139,
+          29.952573,47.622216,40.659398,29.952573,35.225668),
+  Home = c("Golden State Warriors", "Los Angeles Lakers", "Cleveland Cavaliers", "Portland Trail Blazers","Boston Celtics","Indiana Pacers","Memphis Grizzlies","Milwaukee Bucks","New Orleans Pelicans","Orlando Magic","Philadelphia 76ers","Phoenix Suns","Atlanta Hawks","Chicago Bulls","Sacramento Kings","Brooklyn Nets","Dallas Mavericks","Detroit Pistons","Miami Heat","Oklahoma City Thunder","Utah Jazz","Charlotte Hornets","Denver Nuggets","New York Knicks","San Antonio Spurs","Houston Rockets","Los Angeles Clippers","Minnesota Timberwolves","Washington Wizards","Toronto Raptors","New Orleans Hornets","Seattle SuperSonics","New Jersey Nets","New Orleans/Oklahoma City Hornets","Charlotte Bobcats"),
   stringsAsFactors = FALSE
   ) 
+m<-as.numeric(substr(date,6,7))
+if(m>9&&m<13){
+  today<-schedule_table(as.numeric(substr(date, 1, 4))+1)
+}else if(m<7&&m>0){
+  today<-schedule_table(as.numeric(substr(date, 1, 4)))
+}else{
+  return(NA)
+}
+today<-schedule_table(as.numeric(substr(date, 1, 4))+1)
+today<-today %>%
+  filter(Date==date) %>%
+  left_join(labs, by="Home")
 
-usa_map+ 
-  geom_point(data = labs, aes(x = long, y = lat), color = "black", size = 3) +
-  geom_point(data = labs, aes(x = long, y = lat), color = "red", size = 2)+
-  geom_text_repel(data=labs, aes(x=long, y=lat,label = Home),alpha=1,size=3)
+map<-usa_map+ 
+  geom_point(data = today, aes(x = long, y = lat), color = "black", size = 3) +
+  geom_point(data = today, aes(x = long, y = lat), color = "red", size = 2)+
+  geom_text_repel(data=today, aes(x=long, y=lat,label = Home),alpha=1,size=3)
+
+return(map)
+}
+
+schedule_map("2016-10-21")
 ```
 
 ```{r}
