@@ -55,4 +55,8 @@ get.playoff <- function(year, type, table){
 
 playoff2017 <- get.playoff("2015", "games", "schedule")
 head(playoff2017)
+
+playoff2015.pergame <- get.playoff("2015", "per_game", "per_game_stats")
+head(playoff2015.pergame)
 ```
+

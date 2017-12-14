@@ -79,6 +79,7 @@ get.team <- function(team, year, element){
 }
 
 test <- get.team("CLE", "2015", "contracts")
+head(test)
 ```
 
 ```{r}
