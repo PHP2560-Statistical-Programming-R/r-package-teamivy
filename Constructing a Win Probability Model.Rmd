@@ -22,53 +22,69 @@ library(XML)
 options(tibble.width = Inf)
 ```
 
+##Call functions from the other script files
 
-##Pull in Team Schedules
+##Pull in Overall Schedules
 ```{r}
-#schedule
 
-schedule_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_"
+Seas2018 <- schedule_table("2018")
+Seas2017 <- schedule_table("2017")
+load("C:/Users/dyam/Dropbox (Brown)/Brown/Statistical Programming/r-package-teamivy/NBAStats/R/sysdata.rda")
 
-#schedule
-schedule_table<-function(year){
-  if(year>2018){
-    print("The season doesn't start")
-  }else if(year<2001){
-    print("The season isn't included")
-  }else{
-    if(year==2012){
-      month=c("december","january","february",
-              "march","april","may","june")
-    }else if(year==2006|year==2005){
-      month=c("november","december","january","february",
-              "march","april","may","june")
-    }else if(year==2018){
-      month=c("october","november","december","january","february",
-              "march","april")
-    }else{
-      month=c("october","november","december","january","february",
-              "march","april","may","june")
-    }
-    result=NA
-    for(a in 1:length(month)){
-      url<-readLines(paste0(schedule_url,year,"_games-",month[a],
-                            ".html&div=div_schedule"))
-      thepage.tib<-as_tibble(url)
-      temp.text<-thepage.tib[104,]
-      table<-htmltab(temp.text[[1]], which=1,rm_nodata_cols = F)
-      result=rbind(result,table)}
-    names(result)[3]<-"Visitor"
-    names(result)[4]<-"PTSV"
-    names(result)[5]<-"Home"
-    names(result)[6]<-"PTSH"
-    names(result)[7]<-"Box"
-    names(result)[8]<-"OT"
-    result<-result %>% 
-      filter(Date !="Playoffs")
-    result$Date<-as.Date(result$Date, '%a, %b %d, %Y')
-    return(result)
+GetTeamSchedule("Boston Celtics", Year = "2018")
+
+```
+
+##teamrankings.com has the stats by the individual day. We will use this in our gambling model.
+##Test with these.
+```{r}
+url <- "https://www.teamrankings.com/nba/stat/opponent-1st-quarter-points-per-game"
+
+Lines <- readLines(url)
+Lines.tib <- as.tibble(Lines)
+Lines.text <- Lines.tib[1739:2055,]
+schedule.team <- htmltab(Lines.text[[1]], which =1, rm_nodata_cols = F)
+
+url <- "https://www.teamrankings.com/nba/stat/offensive-efficiency"
+
+Lines <- readLines(url)
+Lines.tib <- as.tibble(Lines)
+Lines.text <- Lines.tib[1739:2055,]
+schedule.team <- htmltab(Lines.text[[1]], which =1, rm_nodata_cols = F)
+head(schedule.team)
+```
+
+##Now test a for loop to pull in multipl dates and bind them together
+```{r}
+DatesData <- read.csv("Dates To Scrape.csv")
+DatesData$Date <- mdy(DatesData$Date)
+URLData <- read.csv("Links to stats to scrape.csv")
+URLData$URL <- paste0(URLData$URL, "?date=")
+#DatesData <- DatesData[1:10,]
+#URLData <- URLData[1:2,]
+
+df.tib <- as.tibble()
+for(i in 1:dim(URLData)[1]){
+  url <- paste0(URLData$URL[i])
+  url.df <- as.tibble()
+  for(j in 1:dim(DatesData)[1]){
+    url2 <- paste0(url, DatesData$Date[j])
+    Lines <- readLines(url2)
+    Lines.tib <- as.tibble(Lines)
+    Lines.text <- Lines.tib[1739:2055,]
+    schedule.team <- htmltab(Lines.text[[1]], which =1, rm_nodata_cols = F)
+    schedule.team <- schedule.team %>% 
+      mutate(Date = DatesData$Date[j])
+    
+    url.df <- bind_rows(url.df, schedule.team)
   }
+  
+  df.tib <- bind_rows(df.tib, url.df)
+  
 }
 
-schedule_table("2018")
+
 ```
+
+
+

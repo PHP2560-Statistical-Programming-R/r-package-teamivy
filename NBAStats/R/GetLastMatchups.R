@@ -1,7 +1,7 @@
 ##This function does not include playoff games
 
 GetLastMatchups <- function(team, Team2, number = 5){
-  Matchups <- bind_rows(GetTeamSchedule(team),
+  Matchups <- bind_rows(GetTeamSchedule(team, Year = "2018"),
                         GetTeamSchedule(team, Year = "2017"),
                         GetTeamSchedule(team, Year = "2016"))
   if(str_length(Team2) == 3){
@@ -12,7 +12,7 @@ GetLastMatchups <- function(team, Team2, number = 5){
   Matchups <- Matchups %>%
     filter(Opponent == Team2 & !is.na(Result)) %>%
     arrange(desc(Date)) %>%
-    tail(number)
+    head(number)
   return(Matchups)
 }
 
