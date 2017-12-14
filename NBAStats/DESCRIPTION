@@ -20,5 +20,9 @@ Depends:
   stringi (>= 0.1), 
   rebus (>= 0.1),
   lubridate (>= 1.3),
-  htmltab(>= 0.7.1)
-
+  htmltab (>= 0.7.1),
+  pipeR (>= 0.6.1.3),
+  knitr (>= 1.16),
+  ggplot2 (>= 2.2.1),
+  maps (>= 3.2),
+  ggrepel (>= 0.7)
