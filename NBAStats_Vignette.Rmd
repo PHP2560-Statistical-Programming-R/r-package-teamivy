@@ -1,0 +1,49 @@
+---
+title: "NBA Stats Vignette"
+author: "Teresa DeAtley"
+date: "December 10, 2017"
+output: rmarkdown::html_NBAStats_Vignette
+vignette: >
+  %\VignetteIndexEntry{NBAStats_Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+##NBA Stats Package Discription
+
+NBA stats is a package that pulls live NBA statistics from the website https://www.basketball-reference.com/ from 2008 through 2018.
+
+In addition to pulling team statistics, directly off of the web, betting fucntions have been added to pull from the live NBA statistics to allow individuals to specify by team the odds of winning. 
+
+1.The first part of the package scrapes from all the webpages
+
+2.The second part combines all the scaped tables
+
+3.The third part cleans all the data
+
+4.The fourth part loads the betting function
+
+
+A glossary of the the statistics that are available here: ADD!
+
+For picture examples of what each section in the glossary maps to on the website see the following sections below:
+
+"Heading" can be seen on the home page such as "Teams" or "Playoffs". See example:
+```{r}
+![Heading example from website](Images/NBA picture.PNG)\
+```
+
+Subsections, can be selected from a particular heading, such as the "franchise" the Boston Celtics. See example:
+```{r}
+![Subheading example from website](Images/Franchise page.PNG)\
+```
+
+Lastly, the list of statistic tables avilable which are pulled directly from the website. See example:
+```{r}
+![Table example from website](Images/Table example.PNG)\
+```
+
+
+
+
+
