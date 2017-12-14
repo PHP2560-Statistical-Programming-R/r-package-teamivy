@@ -23,7 +23,8 @@ GetTeamSchedule(team, Year = "2018")
 GetTeamSchedule("BOS", "2018")
 GetTeamSchedule("Boston Celtics", "2015")
 }
+
 \keyword{Schedule}
 \keyword{Team}
-\keywork{Results}
+\keyword{Results}
 \keyword{Seasons}
