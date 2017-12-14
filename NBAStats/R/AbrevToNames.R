@@ -1,5 +1,5 @@
 ###Abbreviations to their team names
-AbrevToNames <- function(Abb) {
+AbbrevToNames <- function(Abb) {
   if(str_length(Abb) != 3){
     print("You must enter a three digit abbrevation for the team in string form")
   } else {
