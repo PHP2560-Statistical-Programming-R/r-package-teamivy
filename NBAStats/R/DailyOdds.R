@@ -1,11 +1,11 @@
+##This function strips the daily betting odds
 
-
-DailyOdds <- function(Date = "20171206"){
-  if(lubridate::ymd(Date) > today() +1) {
-    print("Sorry, the betting lines not set yet! Lines are only released for today and the following day. Check back again!")
+DailyOdds <- function(BettingDate = "20171206"){
+  if(ymd(BettingDate) > today() +1) {
+    print("Sorry, the betting lines are not set yet! Lines are only released for today and the following day. Check back again!")
   } else {
     ##Spreads Tables
-    url.spread <- paste0("http://www.donbest.com/nba/odds/spreads/", Date, ".html")
+    url.spread <- paste0("http://www.donbest.com/nba/odds/spreads/", BettingDate, ".html")
 
     SpreadsTable <- url.spread %>%
       read_html %>%
@@ -56,7 +56,7 @@ DailyOdds <- function(Date = "20171206"){
     SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam, "")
 
     #Team Away
-    patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+    patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
     SpreadsTable$TeamAway <- str_match(SpreadsTable$Team, patternteam2)
     SpreadsTable$Team <- str_replace(SpreadsTable$Team, patternteam2, "")
 
@@ -73,11 +73,14 @@ DailyOdds <- function(Date = "20171206"){
       mutate(Away = paste0(TeamAwayCity, TeamAway))
 
     SpreadsTable <- SpreadsTable %>%
-      select(Team, Time, Bovada, Pinnacle, Mirage, Rot1, Rot2, OSAway, Away) %>%
-      rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+      select(Team, Time, Bovada, Pinnacle, Mirage, Rot1, Rot2, OSAway, Away)
+
+    names(SpreadsTable)[1] <- "Home"
+    names(SpreadsTable)[6] <- "RotAway"
+    names(SpreadsTable)[7] <- "RotHome"
 
     #MoneyLine Table
-    url.ML <- paste0("http://www.donbest.com/nba/odds/money-lines/", Date, ".html")
+    url.ML <- paste0("http://www.donbest.com/nba/odds/money-lines/", BettingDate, ".html")
 
     MoneyLineTable <- url.ML %>%
       read_html %>%
@@ -123,7 +126,7 @@ DailyOdds <- function(Date = "20171206"){
     MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam, "")
 
     #Team Away
-    patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+    patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
     MoneyLineTable$TeamAway <- str_match(MoneyLineTable$Team, patternteam2)
     MoneyLineTable$Team <- str_replace(MoneyLineTable$Team, patternteam2, "")
 
@@ -149,10 +152,13 @@ DailyOdds <- function(Date = "20171206"){
       mutate(Away = paste0(TeamAwayCity, TeamAway))
 
     MoneyLineTable <- MoneyLineTable %>%
-      select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>%
-      rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+      select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway)
 
-    url.OU <- paste0("http://www.donbest.com/nba/odds/totals/", Date, ".html")
+    names(MoneyLineTable)[1] <- "Home"
+    names(MoneyLineTable)[3] <- "RotAway"
+    names(MoneyLineTable)[4] <- "RotHome"
+
+    url.OU <- paste0("http://www.donbest.com/nba/odds/totals/", BettingDate, ".html")
 
     OverUnderTable <- url.OU %>%
       read_html %>%
@@ -191,7 +197,7 @@ DailyOdds <- function(Date = "20171206"){
     OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam, "")
 
     #Team Away
-    patternteam2 <- str_c("(^[:upper:][:lower:]+)")
+    patternteam2 <- str_c("(^[:upper:][:lower:]+|76ers)")
     OverUnderTable$TeamAway <- str_match(OverUnderTable$Team, patternteam2)
     OverUnderTable$Team <- str_replace(OverUnderTable$Team, patternteam2, "")
 
@@ -212,17 +218,23 @@ DailyOdds <- function(Date = "20171206"){
       mutate(Away = paste0(TeamAwayCity, TeamAway))
 
     OverUnderTable <- OverUnderTable %>%
-      select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway) %>%
-      rename(Home = Team, RotAway = Rot1, RotHome = Rot2)
+      select(-Rot, -Opener, -Bovada, - Pinnacle, - Mirage, - TeamAwayCity, -TeamAway)
+
+    names(OverUnderTable)[1] <- "Home"
+    names(OverUnderTable)[3] <- "RotAway"
+    names(OverUnderTable)[4] <- "RotHome"
+
+    ##Join the tables together
 
     BettingTable <- left_join(SpreadsTable, MoneyLineTable, by = c("Home", "Away", "Time", "RotAway", "RotHome")) %>%
       left_join(OverUnderTable, by = c("Home", "Away", "Time", "RotAway", "RotHome"))
+    head(BettingTable)
+    BettingTable <- BettingTable[, c(1, 9, 2:8, 10:21)]
 
-    BettingTable <- BettingTable[, c(1, 9, 2:8, 10:21)] %>%
-      rename(BovadaAwayS = Bovada,
-             PinnacleAwayS = Pinnacle,
-             MirageAwayS = Mirage,
-             OpenerAwayS = OSAway)
+    names(BettingTable)[4] <- "BovadaAwayS"
+    names(BettingTable)[5] <- "PinnacleAwayS"
+    names(BettingTable)[6] <- "MirageAwayS"
+    names(BettingTable)[9] <- "OpenerAwayS"
 
     BettingTable <- BettingTable %>%
       mutate(Time = hm(Time))
@@ -240,8 +252,11 @@ DailyOdds <- function(Date = "20171206"){
              WP.H = (WP.HB + (1-WP.VB))/2,
              WP.V = 1 - WP.H)  %>%
       select(-WP.HB, -WP.VB) %>%
-      mutate(Date = lubridate::ymd(Date))
+      mutate(Date = lubridate::ymd(BettingDate))
     return(BettingTable)
   }
 
 }
+
+
+
