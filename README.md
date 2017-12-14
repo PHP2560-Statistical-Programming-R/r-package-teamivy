@@ -21,3 +21,4 @@
 ##3)How do team statsitics change from the regular seasons to the post season
 ##4)Gambeling odds as the season progresses
 ##5) Stepwise time periods demonstrating changes in team stats
+##6) Transactions 
