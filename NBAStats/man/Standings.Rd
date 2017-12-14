@@ -1,14 +1,12 @@
 \name{Standings.Rd}
 \alias{Standings.Rd}
-\title{Get the standings for a conference in specified season}
+\title{Get the standings for a specified season}
 \description{This function webscrapes the NBA standings from BBR}
-\usage{webscrape_standings(year,conference)}
+\usage{webscrape_standings(year)}
 \arguments{
   \item{year}{
   year is numeric. The year is four digit as YYYY.
 }
-  \item{conference}{
-  conference is a character. "W" represents west conference, and "E" represents east conference.
 }
 }
 \details{
@@ -37,8 +35,7 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-webscrape_standings(2017,"W")
-webscrape_standings(2017,"E")
+webscrape_standings(2017)
 ##---- Should be DIRECTLY executable !! ----
 ##-- ==>  Define data, use random,
 ##--	or do  help(data=index)  for the standard data sets.
