@@ -37,8 +37,8 @@ A list of our functions include:
 8. A function that provides play-off statistics
 9. A function that gets the schedule for all teams in the league during regular season    and playoffs
 10. A function that populates a U.S. map of the games played on a specified date,         visualized by home team name and arena
-11.A function that provides team standings in the league
-12.A function that provides team statistics during the playoffs
+11. A function that provides team standings in the league
+12. A function that provides team statistics during the playoffs
 
 
 A glossary of the the statistics that are available here: ADD!
