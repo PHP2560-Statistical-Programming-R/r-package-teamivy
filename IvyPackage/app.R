@@ -15,6 +15,7 @@ library(XML)
 library(RCurl)
 library(htmltab)
 library(xml2)
+library(NBAStats)
 
 options(shiny.sanitize.errors = FALSE)
 # Define UI for application that draws a histogram
@@ -66,7 +67,7 @@ ui <- fluidPage(
                                        "Utah Jazz" = "UTA",
                                        "Washington Wizards" = "WAS",
                                        selectize = TRUE)),
-                         #selectInput("STstat", "Select a statistic")
+                         #selectInput("STstat", "Select a statistic"),
                          selectInput("STyear", "Select a year",
                                      choices = 2008:2018)
         ),
@@ -120,7 +121,10 @@ ui <- fluidPage(
                         "Toronto Raptors" = "TOR",
                         "Utah Jazz" = "UTA",
                         "Washington Wizards" = "WAS",
-                        selectize = TRUE))
+                        selectize = TRUE)),
+          h4("________________"),
+          dateInput("SPmap","Plot all scheduled games by date",
+                    value = "2017-12-18")
           ),
         
         
@@ -140,7 +144,7 @@ ui <- fluidPage(
          ), 
         
         conditionalPanel(condition="input.tabselected ==5",
-          h3("Matchups"),
+          h3("Get Previous Matchups"),
           selectInput("Mteam1",
                       "First Team", 
                       c("Atlanta Hawks" = "ATL", 
@@ -223,7 +227,9 @@ ui <- fluidPage(
         
         conditionalPanel(condition="input.tabselected ==6",
                          h3("Betting"),
-                         textInput("Bdate", "Pick a date (YYYYMMDD")
+                         dateInput("Bdate", "Choose a date",
+                                   value="2017-11-02"),
+                         uiOutput("table")
         )
         
         ),
@@ -237,20 +243,21 @@ ui <- fluidPage(
                              verbatimTextOutput("teamSummary")),
                     tabPanel("Season Plot",
                              value=2,
-                             tableOutput("playoff")),
+                             plotOutput("usMap")),
                     tabPanel("Playoff Table",
                              value=3,
-                             tableOutput("odds"),
+                             tableOutput("odds1"),
                              verbatimTextOutput("oddsum")),
                     tabPanel("Playoff Plot",
                              value=4,
                              tableOutput("playoff2")),
                     tabPanel("Matchups",
                              value=5,
-                             tableOutput("playoff3")),
+                             tableOutput("match")),
                     tabPanel("Betting",
                              value=6,
-                             tableOutput("playoff4")),
+                             tableOutput("odds"),
+                             verbatimTextOutput("vsum")),
                     id = "tabselected"
         )
       )
@@ -265,21 +272,40 @@ ui <- fluidPage(
 server <- function(input, output) {
 
    output$odds <- renderTable({
-     odds <- DailyOdds(input$oddsDay)
-     head(odds)
+     odds <- DailyOdds(input$Bday)
+     odds
    })
    
    output$oddsum <- renderPrint({
      summary(odds)
    })
    
-   output$playoff <- renderTable({
-     playoff <- get.playoffs(input$playoffYear, input$playoffType, input$playoffTable)
-     head(playoff)
+   
+   output$table <- renderUI({
+     dat <- DailyOdds("20121205")
+     colnames <- names(dat)
+     
+     # Create the checkboxes and select them all by default
+     selectInput("vodd", "Choose variable", 
+                        choices  = colnames)
    })
    
-   output$teamSummary <- renderPrint({
-     print("test")
+   output$vsum <- renderPrint({
+     dat <- DailyOdds("20121205")
+     dat <- dat %>%
+       select(input$vodd) %>%
+       na.omit()
+     summary(dat)
+
+   })
+   
+   output$usMap <- renderPlot({
+     schedule_map(input$SPmap)
+   })
+   
+   output$match <- renderTable({
+     match <- GetLastMatchups(input$Mteam1, input$Mteam2, input$Mnumber)
+     match
    })
 }
 
