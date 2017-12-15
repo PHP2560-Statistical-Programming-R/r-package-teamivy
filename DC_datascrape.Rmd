@@ -228,6 +228,38 @@ Season <- get.season("2018", "team-stats-per_game") %>%
 dplyr function that matches title, airline example to match delay
 
 ```{r}
-get.team("BOS", "2017", "team-stats-per_game")
+TableCode <- function(element) {
+  for(i in 1:18){
+    if (element == Glossary[i,4]) {
+      elementCode <- Glossary[i,5]
+    } else {
+      
+    }
+    
+  return(elementCode)
+  }
+}
+
+```
+
+```{r}
+###Abbreviations to their team names
+
+element <- dataframe %>%
+  filter(tablecode == element) %>%
+  select(CSSselector)
+
+TableCode <- function(element) {
+  if(element > 18 || element < 1){
+    print("You must enter a valid table code in numeric form")
+  } else {
+    tbl <- Glossary %>%
+      mutate(Table_Code = as.numeric(Table_Code)) %>%
+      mutate(CSS_Selector = as.character(CSS_Selector)) %>%
+      filter(Table_Code == element)
+    return(tbl$CSS_Selector[1])
+  }
+}
+
 
 ```
