@@ -13,16 +13,25 @@ vignette: >
 
 NBA stats is a package that pulls live NBA statistics from the website https://www.basketball-reference.com/ from 2008 through 2018.
 
-In addition to pulling team statistics, directly off of the web, betting fucntions have been added to pull from the live NBA statistics to allow individuals to specify by team the odds of winning. 
+In addition to pulling team statistics directly off of the web, a number of fucntions have been added to pull from the live NBA statistics. 
 
-1.The first part of the package scrapes from all the webpages
+The package:
 
-2.The second part combines all the scaped tables
+1.First, scrapes from the webpages for different statistics
 
-3.The third part cleans all the data
+2.Second, combines all the scaped tables into a tibble
 
-4.The fourth part loads the betting function
+3.Third, cleans all the data
 
+4.Fourth, loads the functions
+
+A sample of our functions are the following:
+
+1. A betting function that allows the user to specify the team and get the odds of winning
+2. A function to that provides the statistics on a specified match up between teams
+3. A function that populates a U.S. map of the games played on a specifeid date, visualize by home team name and arena
+
+To link to our documentation please see here:
 
 A glossary of the the statistics that are available here: ADD!
 
