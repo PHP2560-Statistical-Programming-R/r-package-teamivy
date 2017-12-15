@@ -25,13 +25,21 @@ The package:
 
 4.Fourth, loads the functions
 
-A sample of our functions are the following:
+A list of our functions include:
 
-1. A betting function that allows the user to specify the team and get the odds of winning
-2. A function to that provides the statistics on a specified match up between teams
-3. A function that populates a U.S. map of the games played on a specifeid date, visualize by home team name and arena
+1. A function that sets abbreviations to team names
+2. A function that calculates win probability
+3. A betting function that allows the user to specify two teams and get the daily odds    of winning
+4. A function to that provides the last match up dates between teams
+5. A function that provides a team's season stats during regular season
+6. A function that provides the specified team's schedule
+7. A function that sets team's names to abbreviations
+8. A function that provides play-off statistics
+9. A function that gets the schedule for all teams in the league during regular season    and playoffs
+10. A function that populates a U.S. map of the games played on a specified date,         visualized by home team name and arena
+11.A function that provides team standings in the league
+12.A function that provides team statistics during the playoffs
 
-To link to our documentation please see here:
 
 A glossary of the the statistics that are available here: ADD!
 
