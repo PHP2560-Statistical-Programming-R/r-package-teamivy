@@ -26,90 +26,236 @@ ui <- fluidPage(
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-        h3("Team Stats"),
-         selectInput("team",
-                     "Choose a team:", 
-                     c("Atlanta Hawks" = "ATL", 
-                       "Boston Celtics" = "BOS",
-                       "Brooklyn Nets" = "BRK",
-                       "New Jersey Nets" = "NJN",
-                       "Charlotte Hornets" = "CHO",
-                       "Charlotte Bobcats" = "CHA",
-                       "Chicago Bulls" = "CHI",
-                       "Cleveland Cavaliers", "CLE",
-                       "Dallas Mavericks" = "DAL",
-                       "Denver Nuggets" = "DEV",
-                       "Detroit Pistons" = "DET",
-                       "Golden State Warriors" = "GSW",
-                       "Houston Rockets" = "HOU",
-                       "Indiana Pacers" = "IND",
-                       "Los Angeles Clippers" = "LAC",
-                       "Los Angeles Lakers" = "LAL",
-                       "Memphis Grizzlies" = "MEM",
-                       "Miami Heat" = "MIA",
-                       "Milwaukee Bucks" = "MIL",
-                       "Minnesota Timberwolves" = "MIN",
-                       "New Orleans Pelicans" = "NOP",
-                       "New Orleans Hornets" = "NOH",
-                       "OKlahoma City Hornets" = "NOK",
-                       "New York Knicks" = "NYK",
-                       "Oklahoma City Thunder" = "OKC",
-                       "Seattle SuperSonics" = "SEA",
-                       "Orlando Magic" = "ORL",
-                       "Philidelphia 76ers" = "PHI",
-                       "Phoenix Suns" = "PHO",
-                       "Portland Trail Blazers" = "POR",
-                       "Sacramento Kings" = "SAC",
-                       "San Antonio Spurs" = "SAS",
-                       "Toronto Raptors" = "TOR",
-                       "Utah Jazz" = "UTA",
-                       "Washington Wizards" = "WAS",
-                       selectize = TRUE)),
-         selectInput("teamtable", "Choose a Stat:",
-                     c("Roster" = "roster",
-                       "Advanced" = "advanced",
-                       "Shooting" = "shooting",
-                       "Play by Play" = "advanced_pbp",
-                       "Salary" = "salaries2",
-                       "Pay Roll" = "contracts",
-                       "Team Pay Roll" = "div_salary_cap_history"
-                       )),
-          selectInput("teamyear", "Choose a Year:",
+        conditionalPanel(condition="input.tabselected ==1",
+                         h3("Season Table"),
+                         selectInput("STteam",
+                                     "Choose a team:", 
+                                     c("Atlanta Hawks" = "ATL", 
+                                       "Boston Celtics" = "BOS",
+                                       "Brooklyn Nets" = "BRK",
+                                       "New Jersey Nets" = "NJN",
+                                       "Charlotte Hornets" = "CHO",
+                                       "Charlotte Bobcats" = "CHA",
+                                       "Chicago Bulls" = "CHI",
+                                       "Cleveland Cavaliers", "CLE",
+                                       "Dallas Mavericks" = "DAL",
+                                       "Denver Nuggets" = "DEV",
+                                       "Detroit Pistons" = "DET",
+                                       "Golden State Warriors" = "GSW",
+                                       "Houston Rockets" = "HOU",
+                                       "Indiana Pacers" = "IND",
+                                       "Los Angeles Clippers" = "LAC",
+                                       "Los Angeles Lakers" = "LAL",
+                                       "Memphis Grizzlies" = "MEM",
+                                       "Miami Heat" = "MIA",
+                                       "Milwaukee Bucks" = "MIL",
+                                       "Minnesota Timberwolves" = "MIN",
+                                       "New Orleans Pelicans" = "NOP",
+                                       "New Orleans Hornets" = "NOH",
+                                       "OKlahoma City Hornets" = "NOK",
+                                       "New York Knicks" = "NYK",
+                                       "Oklahoma City Thunder" = "OKC",
+                                       "Seattle SuperSonics" = "SEA",
+                                       "Orlando Magic" = "ORL",
+                                       "Philidelphia 76ers" = "PHI",
+                                       "Phoenix Suns" = "PHO",
+                                       "Portland Trail Blazers" = "POR",
+                                       "Sacramento Kings" = "SAC",
+                                       "San Antonio Spurs" = "SAS",
+                                       "Toronto Raptors" = "TOR",
+                                       "Utah Jazz" = "UTA",
+                                       "Washington Wizards" = "WAS",
+                                       selectize = TRUE)),
+                         #selectInput("STstat", "Select a statistic")
+                         selectInput("STyear", "Select a year",
+                                     choices = 2008:2018)
+        ),
+        
+        conditionalPanel(condition="input.tabselected ==2",
+          h3("Season Plot"),
+          selectInput("SPstat", "Choose a Stat:",
+                      c("Playoff Schedule" = "schedule",
+                        "Stats Per Game" = "per_game_stats",
+                        "Advanced Stats" = "advanced_stats",
+                        "Team: Per Game Stats" = "team-stats-per_game",
+                        "Shooting" = "team_shooting",
+                        "Opponent: Per Game Stats" = "opponent-stats-per_game",
+                        "Opponent: Shooting" = "opponent_shooting")),
+          selectInput("SPYear", "Choose a Year:",
                       choices = 2008:2018),
-        h3("Playoff Stats"),
-          selectInput("playOffTable", "Choose a Stat:",
-                      c("Playoff Schedule" = "div_schedule",
-                        "Stats Per Game" = "div_per_game_stats",
-                        "Advanced Stats" = "div_advanced_stats",
-                        "Team: Per Game Stats" = "div_team-stats-per_game",
-                        "Shooting" = "div_team_shooting",
-                        "Opponent: Per Game Stats" = "div_opponent-stats-per_game",
-                        "Opponent: Shooting" = "div_opponent_shooting")),
-          selectInput("teamyear", "Choose a Year:",
+          selectInput("STteam",
+                      "Choose a team:", 
+                      c("Atlanta Hawks" = "ATL", 
+                        "Boston Celtics" = "BOS",
+                        "Brooklyn Nets" = "BRK",
+                        "New Jersey Nets" = "NJN",
+                        "Charlotte Hornets" = "CHO",
+                        "Charlotte Bobcats" = "CHA",
+                        "Chicago Bulls" = "CHI",
+                        "Cleveland Cavaliers", "CLE",
+                        "Dallas Mavericks" = "DAL",
+                        "Denver Nuggets" = "DEV",
+                        "Detroit Pistons" = "DET",
+                        "Golden State Warriors" = "GSW",
+                        "Houston Rockets" = "HOU",
+                        "Indiana Pacers" = "IND",
+                        "Los Angeles Clippers" = "LAC",
+                        "Los Angeles Lakers" = "LAL",
+                        "Memphis Grizzlies" = "MEM",
+                        "Miami Heat" = "MIA",
+                        "Milwaukee Bucks" = "MIL",
+                        "Minnesota Timberwolves" = "MIN",
+                        "New Orleans Pelicans" = "NOP",
+                        "New Orleans Hornets" = "NOH",
+                        "OKlahoma City Hornets" = "NOK",
+                        "New York Knicks" = "NYK",
+                        "Oklahoma City Thunder" = "OKC",
+                        "Seattle SuperSonics" = "SEA",
+                        "Orlando Magic" = "ORL",
+                        "Philidelphia 76ers" = "PHI",
+                        "Phoenix Suns" = "PHO",
+                        "Portland Trail Blazers" = "POR",
+                        "Sacramento Kings" = "SAC",
+                        "San Antonio Spurs" = "SAS",
+                        "Toronto Raptors" = "TOR",
+                        "Utah Jazz" = "UTA",
+                        "Washington Wizards" = "WAS",
+                        selectize = TRUE))
+          ),
+        
+        
+        conditionalPanel(condition="input.tabselected ==3",
+          h3("Playoffs Table"),
+          selectInput("PTyear", "Select a year",
+                      choices = 2008:2018)
+          ),
+        
+        conditionalPanel(condition="input.tabselected ==4",
+          h3("Playoffs Plot"),
+          selectInput("PPyear", "Select a year",
                       choices = 2008:2018),
-        h3("Season Stats"),
-         selectInput("seasonTable", "Choose a Stat:",
-                     c("Schedule & Results" = "div_schedule",
-                       "Standings" = "confs_standing_E")),
-         selectInput("seasonMonth", "Select a Month:",
-                     choices = 1:12),
-         selectInput("seasonYear", "Choose a Year:",
-                     choices = 2008:2018),
-        h3("Betting Odds")
-      ), 
+          selectInput("PPstat", "Select a statistic",
+                      choices = 1:10)
+        
+         ), 
+        
+        conditionalPanel(condition="input.tabselected ==5",
+          h3("Matchups"),
+          selectInput("Mteam1",
+                      "First Team", 
+                      c("Atlanta Hawks" = "ATL", 
+                        "Boston Celtics" = "BOS",
+                        "Brooklyn Nets" = "BRK",
+                        "New Jersey Nets" = "NJN",
+                        "Charlotte Hornets" = "CHO",
+                        "Charlotte Bobcats" = "CHA",
+                        "Chicago Bulls" = "CHI",
+                        "Cleveland Cavaliers", "CLE",
+                        "Dallas Mavericks" = "DAL",
+                        "Denver Nuggets" = "DEV",
+                        "Detroit Pistons" = "DET",
+                        "Golden State Warriors" = "GSW",
+                        "Houston Rockets" = "HOU",
+                        "Indiana Pacers" = "IND",
+                        "Los Angeles Clippers" = "LAC",
+                        "Los Angeles Lakers" = "LAL",
+                        "Memphis Grizzlies" = "MEM",
+                        "Miami Heat" = "MIA",
+                        "Milwaukee Bucks" = "MIL",
+                        "Minnesota Timberwolves" = "MIN",
+                        "New Orleans Pelicans" = "NOP",
+                        "New Orleans Hornets" = "NOH",
+                        "OKlahoma City Hornets" = "NOK",
+                        "New York Knicks" = "NYK",
+                        "Oklahoma City Thunder" = "OKC",
+                        "Seattle SuperSonics" = "SEA",
+                        "Orlando Magic" = "ORL",
+                        "Philidelphia 76ers" = "PHI",
+                        "Phoenix Suns" = "PHO",
+                        "Portland Trail Blazers" = "POR",
+                        "Sacramento Kings" = "SAC",
+                        "San Antonio Spurs" = "SAS",
+                        "Toronto Raptors" = "TOR",
+                        "Utah Jazz" = "UTA",
+                        "Washington Wizards" = "WAS",
+                        selectize = TRUE)),
+          selectInput("Mteam2",
+                      "Second Team", 
+                      c("Atlanta Hawks" = "ATL", 
+                        "Boston Celtics" = "BOS",
+                        "Brooklyn Nets" = "BRK",
+                        "New Jersey Nets" = "NJN",
+                        "Charlotte Hornets" = "CHO",
+                        "Charlotte Bobcats" = "CHA",
+                        "Chicago Bulls" = "CHI",
+                        "Cleveland Cavaliers", "CLE",
+                        "Dallas Mavericks" = "DAL",
+                        "Denver Nuggets" = "DEV",
+                        "Detroit Pistons" = "DET",
+                        "Golden State Warriors" = "GSW",
+                        "Houston Rockets" = "HOU",
+                        "Indiana Pacers" = "IND",
+                        "Los Angeles Clippers" = "LAC",
+                        "Los Angeles Lakers" = "LAL",
+                        "Memphis Grizzlies" = "MEM",
+                        "Miami Heat" = "MIA",
+                        "Milwaukee Bucks" = "MIL",
+                        "Minnesota Timberwolves" = "MIN",
+                        "New Orleans Pelicans" = "NOP",
+                        "New Orleans Hornets" = "NOH",
+                        "OKlahoma City Hornets" = "NOK",
+                        "New York Knicks" = "NYK",
+                        "Oklahoma City Thunder" = "OKC",
+                        "Seattle SuperSonics" = "SEA",
+                        "Orlando Magic" = "ORL",
+                        "Philidelphia 76ers" = "PHI",
+                        "Phoenix Suns" = "PHO",
+                        "Portland Trail Blazers" = "POR",
+                        "Sacramento Kings" = "SAC",
+                        "San Antonio Spurs" = "SAS",
+                        "Toronto Raptors" = "TOR",
+                        "Utah Jazz" = "UTA",
+                        "Washington Wizards" = "WAS",
+                        selectize = TRUE)),
+          numericInput("Mnumber", "Input a Number",
+                       value=4)
+        ),
+        
+        conditionalPanel(condition="input.tabselected ==6",
+                         h3("Betting"),
+                         textInput("Bdate", "Pick a date (YYYYMMDD")
+        )
+        
+        ),
       
       
       # Show a plot of the generated distribution
       mainPanel(
-        tabsetPanel(type = "tabs",
-                    tabPanel("Team Stats", tableOutput("teamSummary")),
-                    tabPanel("Playoff Stats", dataTableOutput("Posts")),
-                    tabPanel("Season Stats", dataTableOutput("Posts2")),
-                    tabPanel("Betting Stats")
+        tabsetPanel(
+                    tabPanel("Season Table", 
+                             value=1,
+                             verbatimTextOutput("teamSummary")),
+                    tabPanel("Season Plot",
+                             value=2,
+                             tableOutput("playoff")),
+                    tabPanel("Playoff Table",
+                             value=3,
+                             tableOutput("odds"),
+                             verbatimTextOutput("oddsum")),
+                    tabPanel("Playoff Plot",
+                             value=4,
+                             tableOutput("playoff")),
+                    tabPanel("Matchups",
+                             value=5,
+                             tableOutput("playoff")),
+                    tabPanel("Betting",
+                             value=6,
+                             tableOutput("playoff")),
+                    id = "tabselected"
         )
       )
-   )
-)
+))
+      
 
 
 
@@ -117,43 +263,23 @@ ui <- fluidPage(
 
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-  team_url <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2F"
-  caphistoryurl <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fcontracts%2Fsalary-cap-history.html&div=div_salary_cap_history"
-  contract_url <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fcontracts%2F"
-  playoffs_url<- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
 
-  
-  get.team <- function(team, year, element){
-    if (element == "roster") {
-      urltable <- (paste0(team_url, team,"%2F", year, ".html&div=div_", element))
-      table <- htmltab(urltable) %>% 
-        mutate(Team = team) %>% 
-        rename(Nationality = V1) 
-    } else if ((element == "per_game") || (element == "salaries2")) {
-      urltable <- (paste0(team_url, team,"%2F", year, ".html&div=div_", element))
-      table <- htmltab(urltable) %>% 
-        mutate(Team = team) %>% 
-        rename(Player = V1)
-      table <- table[,-1]
-    } else if (element == "contracts") {
-      urltable <- (paste0(contract_url,team,".html&div=div_contracts"))
-      table <- htmltab(urltable)
-    } else if (element == "salary_cap_history") {
-      table <- htmltab("https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fcontracts%2Fsalary-cap-history.html&div=div_salary_cap_history")
-    }
-    else {
-      urltable <- (paste0(team_url, team,"%2F", year, ".html&div=div_", element))
-      table <- htmltab(urltable) %>% 
-        mutate(Team = team) %>% 
-        within(rm(Rk))
-    }
-    return(table)
-  }
-  dataInput <- reactive({
-    data <- get.team(input$team, input$teamyear, input$teamtable)
-  })
-   output$teamSummary <- renderTable({
-     head(data)
+   output$odds <- renderTable({
+     odds <- DailyOdds(input$oddsDay)
+     head(odds)
+   })
+   
+   output$oddsum <- renderPrint({
+     summary(odds)
+   })
+   
+   output$playoff <- renderTable({
+     playoff <- get.playoffs(input$playoffYear, input$playoffType, input$playoffTable)
+     head(playoff)
+   })
+   
+   output$teamSummary <- renderPrint({
+     print("test")
    })
 }
 
