@@ -134,14 +134,9 @@ ui <- fluidPage(
           ),
         
         conditionalPanel(condition="input.tabselected ==4",
-          h3("Playoffs Plot"),
+          h3("Playoffs Stats per Game"),
           selectInput("PPyear", "Select a year",
                       choices = 2008:2018),
-          selectInput("PPtable", "Choose a table",
-                      c(
-                        "Team Stats Per Game" = 13,
-                        "Team Shooting" = 15
-                      )),
           selectInput("PPstat", "Select a statistic",
                       c("Games Played" = "G",
                         "Minutes Played" = "MP",
@@ -165,12 +160,13 @@ ui <- fluidPage(
                         "Blocks" = "BLK",
                         "Turnovers" = "TOV",
                         "Personal Fouls" = "PF",
-                        "Points" = "PTS"))
+                        "Points" = "PTS")),
+          helpText("The red dotted line represents the league average per stat.")
         
          ), 
         
         conditionalPanel(condition="input.tabselected ==5",
-          h3("Get Previous Matchups"),
+          h3("Previous Matchups"),
           selectInput("Mteam1",
                       "First Team", 
                       c("Atlanta Hawks" = "ATL", 
@@ -207,8 +203,7 @@ ui <- fluidPage(
                         "San Antonio Spurs" = "SAS",
                         "Toronto Raptors" = "TOR",
                         "Utah Jazz" = "UTA",
-                        "Washington Wizards" = "WAS",
-                        selectize = TRUE)),
+                        "Washington Wizards" = "WAS"), selectize = TRUE),
           selectInput("Mteam2",
                       "Second Team", 
                       c("Atlanta Hawks" = "ATL", 
@@ -245,8 +240,8 @@ ui <- fluidPage(
                         "San Antonio Spurs" = "SAS",
                         "Toronto Raptors" = "TOR",
                         "Utah Jazz" = "UTA",
-                        "Washington Wizards" = "WAS",
-                        selectize = TRUE)),
+                        "Washington Wizards" = "WAS"
+                        ), selectize = TRUE),
           numericInput("Mnumber", "Input a Number",
                        value=4)
         ),
@@ -264,13 +259,13 @@ ui <- fluidPage(
         tabsetPanel(
                     tabPanel("Team Schedule", 
                              value=1,
-                             tableOutput("tSchedule")),
+                             dataTableOutput("tSchedule")),
                     tabPanel("Season Plot",
                              value=2,
                              plotOutput("usMap")),
                     tabPanel("Standings",
                              value=3,
-                             tableOutput("standings")),
+                             dataTableOutput("standings")),
                     tabPanel("Playoff Plot",
                              value=4,
                              plotOutput("plot")),
@@ -300,16 +295,16 @@ server <- function(input, output) {
    })
    
    output$plot <- renderPlot({
-     stat_plot(input$PPyear, input$PPtable, input$PPstat)
+     stat_plot(input$PPyear, 13, input$PPstat)
 
    })
 
    
    
    #standings
-   output$standings <- renderTable({
+   output$standings <- renderDataTable({
      standings <- webscrape_standings(input$sYear)
-     head(standings, n=15)
+     standings
    })
    
    #second piece of playoff plot, game location  
@@ -324,9 +319,8 @@ server <- function(input, output) {
    })
    
    #team schedule 
-   output$tSchedule <- renderTable({
+   output$tSchedule <- renderDataTable({
      team <- GetTeamSchedule.shiny(input$TSteam,input$TSyear)
-     head(team)
    })
 }
 
