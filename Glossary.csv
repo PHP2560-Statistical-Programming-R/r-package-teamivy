@@ -1,4 +1,4 @@
-Heading,Subsection,Table Name,Table Code,CSS Selector,Url:
+Heading,Subsection,Table_Name,Table_Code,CSS_Selector,URL
 Seasons,Schedule and results,Schedule,1,schedule,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_2017_games-october.html&div=div_schedule
 Seasons,Seasons > Standings,Expanded standings,2,expanded_standings,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_2017_standings.html&div=div_expanded_standings
 Seasons,[Year] Season,Team Stats per game,3,team-stats-per_game,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_2018.html&div=div_
