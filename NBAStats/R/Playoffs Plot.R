@@ -1,5 +1,5 @@
 stat_plot <- function(year, table_code , col_name){
-  if (table_code == 13 || table_code == 17) {
+  if (table_code == 13 || table_code == 15) {
     table <- TableCode(table_code)
   } else {
     print("Please enter a valid numeric value for playoffs table code")
