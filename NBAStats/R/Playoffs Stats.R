@@ -1,6 +1,6 @@
 playoffs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
 
-get.playoffs <- function(year, type, table) {
+get.playoffs <- function(year, table, type = "") {
   if (type == "games") {
     urltable <- paste0(playoffs_url, year, "_", type, ".html&div=div_", table)
     playoffspage <- readLines(urltable)
