@@ -1,10 +1,17 @@
-stat_plot<-function(year, table,col_name){
-  table <- get.playoffs(year,table) 
+stat_plot <- function(year, table_code , variable){
+  if (table_code == 13 || table_code == 17) {
+    print("Please enter a valid numeric value for playoffs table code")
+    break
+  } else {
+    table <- TableCode(table_code)
+  }
+
+  table <- get.playoffs(year,table)
   per <- table %>%
     drop_na() %>%
     select(Team,col_name)
   per[,2]<- as.numeric(as.character(per[,2]))
-  
+
   plot <- ggplot(per, aes(x= Team, y = per[,2])) +
     geom_point() +
     xlab("Team") +
