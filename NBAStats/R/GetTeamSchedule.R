@@ -51,8 +51,7 @@ GetTeamSchedule <- function(team, Year = "2018") {
 
   schedule.team <- schedule.team %>%
     filter(Opponent != "Opponent") %>%
-    mutate(Date = as.Date(Date, '%a, %b %d, %Y'),
-           Home = ifelse(is.na(Home), 1, 0))
+    mutate(Home = ifelse(is.na(Home), 1, 0))
   schedule.team <- schedule.team[, c(11, 1,2,4,3,5,6,7,8,9,10)]
   return(schedule.team)
 }
