@@ -1,0 +1,19 @@
+Heading,Subsection,Table Name,Table Code,CSS Selector,Url:
+Seasons,Schedule and results,Schedule,1,schedule,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_2017_games-october.html&div=div_schedule
+Seasons,Seasons > Standings,Expanded standings,2,expanded_standings,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_2017_standings.html&div=div_expanded_standings
+Seasons,[Year] Season,Team Stats per game,3,team-stats-per_game,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_2018.html&div=div_
+Teams,Which Franchise,Advanced PBP,4,advanced_pbp,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced
+Teams,Which Franchise,Salary,5,salaries2,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_salaries2
+Teams,Which Team,Roster,6,roster,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_per_game
+Teams,"Which Team, then Roster & Stats",Per Game,7,per_game,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_per_game
+Teams,Team Page > Roster & Stats,Advanced,8,advanced,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_advanced
+Teams,Team Page > Roster & Stats,Shooting,9,shooting,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fteams%2FBOS%2F2018.html&div=div_shooting
+Teams,Team Page > More [Team Name] Pages,Contracts,10,contracts,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fcontracts%2FBOS.html&div=div_contracts
+Teams,Team Page > More [Team Name] Pages > Team Payroll > Salary cap history,Cap History,11,salary_cap_history,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fcontracts%2Fsalary-cap-history.html&div=div_salary_cap_history
+Playoffs,Playoffs > Summary > Per G,Per Game Stats,12,per_game_stats,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017_per_game.html&div=div_per_game_stats
+Playoffs,Playoffs > Summary,Team Stats per game,13,team-stats-per_game,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017.html&div=div_team-stats-per_game
+Playoffs,Playoffs > Summary > Advanced,Advanced Stats,14,advanced_stats,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017_advanced.html&div=div_advanced_stats
+Playoffs,Playoffs > Summary,Team Shooting,15,team_shooting,widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017.html&div=div_team_shooting
+Playoffs,Year then schedule and results,Playoffs Schedule ,16,schedule,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017_games.html&div=div_schedule
+Playoffs,Playoffs > Summary,Opponent per game,17,opponent-stats-per_game,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017.html&div=div_opponent-stats-per_game
+Playoffs,Playoffs > Summary,Opponent shooting,18,opponent_shooting,https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_2017.html&div=div_opponent_shooting
