@@ -41,7 +41,8 @@ A list of our functions include:
 12. A function that provides team statistics during the playoffs
 
 
-A glossary of the the statistics that are available here: (Glossary/Glossary.csv)
+A glossary of the the statistics that are available here:
+https://docs.google.com/spreadsheets/d/1TlsKr_mAhdhPn4hHUFHKRyVnVLpAuTW7LVbc1eKcjKc/edit?usp=sharing
 
 For picture examples of what each section in the glossary maps to on the website see the following sections below:
 
