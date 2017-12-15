@@ -166,20 +166,13 @@ return(map)
 schedule_map("2017-12-14")
 ```
 
+
 ```{r}
-thepage <-  readLines('https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_2016_games-october.html&div=div_schedule')
-
-#Convert the webpage into an easily subsettable tibble
-thepage.tib <- as_tibble(thepage) 
-
-#Find the row including the data table
-temp.text <- thepage.tib[104,] #This stores as a list
-
-#Read the html code as a data table
-AdvancedPBP <- htmltab(temp.text[[1]], which =1 ) #Call the data table element in the list 
-
-schedule_2016<-schedule_2016 %>% 
-    drop_na() %>%
-    filter(Date !="Playoffs")
+per <- get.playoffs("2017","pe","team-stats-per_game")
+p <- ggplot(per, aes(x= Team, y = FG)) +
+  geom_point() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+p
 ```
+
 
