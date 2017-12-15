@@ -128,8 +128,8 @@ ui <- fluidPage(
         
         
         conditionalPanel(condition="input.tabselected ==3",
-          h3("Playoffs Table"),
-          selectInput("PTyear", "Select a year",
+          h3("Standings"),
+          selectInput("sYear", "Select a year",
                       choices = 2008:2018)
           ),
         
@@ -137,8 +137,35 @@ ui <- fluidPage(
           h3("Playoffs Plot"),
           selectInput("PPyear", "Select a year",
                       choices = 2008:2018),
+          selectInput("PPtable", "Choose a table",
+                      c(
+                        "Team Stats Per Game" = 13,
+                        "Team Shooting" = 15
+                      )),
           selectInput("PPstat", "Select a statistic",
-                      choices = 1:10)
+                      c("Games Played" = "G",
+                        "Minutes Played" = "MP",
+                        "Field Goals" = "FG",
+                        "Field Goals Attempted" = "FGA",
+                        "Field Goal Percentage" = "FG%",
+                        "3-Point Field Goals" = "3P",
+                        "3-Point Field Goal Attempted" = "3PA",
+                        "3-Point Field Goal Percentage" = "3P%",
+                        "2-Point Field Goals Made" = "2P",
+                        "2-Point Field Goal Attemped" = "2PA",
+                        "2-Point Field Goal Percentage" = "2P%",
+                        "Free Throws Made" = "FT",
+                        "Free Throws Attempted" = "FTA",
+                        "Free Throw Percentage" = "FT%",
+                        "Offensive Rebounds" = "ORB",
+                        "Defensive Rebounds" = "DRB",
+                        "Total Rebounds" = "TRB",
+                        "Assists" = "AST",
+                        "Steals" = "STL",
+                        "Blocks" = "BLK",
+                        "Turnovers" = "TOV",
+                        "Personal Fouls" = "PF",
+                        "Points" = "PTS"))
         
          ), 
         
@@ -227,8 +254,7 @@ ui <- fluidPage(
         conditionalPanel(condition="input.tabselected ==6",
                          h3("Betting"),
                          dateInput("Bdate", "Choose a date",
-                                   value="2017-11-02"),
-                         uiOutput("table")
+                                   value="2017-11-02")
         )
         
         ),
@@ -242,20 +268,18 @@ ui <- fluidPage(
                     tabPanel("Season Plot",
                              value=2,
                              plotOutput("usMap")),
-                    tabPanel("Playoff Table",
+                    tabPanel("Standings",
                              value=3,
-                             tableOutput("odds1"),
-                             verbatimTextOutput("oddsum")),
+                             tableOutput("standings")),
                     tabPanel("Playoff Plot",
                              value=4,
-                             tableOutput("playoff2")),
+                             plotOutput("plot")),
                     tabPanel("Matchups",
                              value=5,
                              tableOutput("match")),
                     tabPanel("Betting",
                              value=6,
-                             tableOutput("odds"),
-                             verbatimTextOutput("vsum")),
+                             tableOutput("odds")),
                     id = "tabselected"
         )
       )
@@ -269,43 +293,37 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
 
+  #Betting Odds 
    output$odds <- renderTable({
      odds <- DailyOdds(input$Bday)
      odds
    })
    
-   output$oddsum <- renderPrint({
-     summary(odds)
-   })
-   
-   
-   output$table <- renderUI({
-     dat <- DailyOdds("20121205")
-     colnames <- names(dat)
-     
-     # Create the checkboxes and select them all by default
-     selectInput("vodd", "Choose variable", 
-                        choices  = colnames)
-   })
-   
-   output$vsum <- renderPrint({
-     dat <- DailyOdds("20121205")
-     dat <- dat %>%
-       select(input$vodd) %>%
-       na.omit()
-     summary(dat)
+   output$plot <- renderPlot({
+     stat_plot(input$PPyear, input$PPtable, input$PPstat)
 
    })
+
    
+   
+   #standings
+   output$standings <- renderTable({
+     standings <- webscrape_standings(input$sYear)
+     head(standings, n=15)
+   })
+   
+   #second piece of playoff plot, game location  
    output$usMap <- renderPlot({
      schedule_map(input$SPmap)
    })
    
+   #matchups 
    output$match <- renderTable({
      match <- GetLastMatchups(input$Mteam1, input$Mteam2, input$Mnumber)
      match
    })
    
+   #team schedule 
    output$tSchedule <- renderTable({
      team <- GetTeamSchedule.shiny(input$TSteam,input$TSyear)
      head(team)
