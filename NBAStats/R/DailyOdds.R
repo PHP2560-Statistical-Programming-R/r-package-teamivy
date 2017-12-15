@@ -1,6 +1,8 @@
 ##This function strips the daily betting odds
+DailyOdds <- function(BettingDate2 = "2017-12-15"){
+  BettingDate2 <- as.Date(BettingDate2)
+  BettingDate <- format(BettingDate2, "%Y%m%d")
 
-DailyOdds <- function(BettingDate = "20171206"){
   if(ymd(BettingDate) > today() +1) {
     print("Sorry, the betting lines are not set yet! Lines are only released for today and the following day. Check back again!")
   } else {

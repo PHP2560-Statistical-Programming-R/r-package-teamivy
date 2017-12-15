@@ -1,7 +1,6 @@
-
 playoffs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
 
-get.playoffs <- function(year, type, table) {
+get.playoffs <- function(year, table, type = "") {
   if (type == "games") {
     urltable <- paste0(playoffs_url, year, "_", type, ".html&div=div_", table)
     playoffspage <- readLines(urltable)
@@ -10,8 +9,8 @@ get.playoffs <- function(year, type, table) {
     table <- htmltab(temp.text[[1]], which =1, rm_nodata_cols = F)
     names(table)[names(table) == "Visitor/Neutral"] <- "Away"
     names(table)[names(table) == "Home/Neutral"] <- "Home"
-    names(table)[names(table) == "PTS"] <- "PTS Away"
-    names(table)[names(table) == "PTS.1"] <- "PTS Home"
+    names(table)[4] <- "PTS AWAY"
+    names(table)[6] <- "PTS HOME"
     table <- table[,-7:-9]
   } else if ((type == "per_game") || (type == "advanced")) {
     urltable <- paste0(playoffs_url, year, "_", type, ".html&div=div_", table)

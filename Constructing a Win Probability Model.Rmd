@@ -54,8 +54,11 @@ schedule.team <- htmltab(Lines.text[[1]], which =1, rm_nodata_cols = F)
 head(schedule.team)
 ```
 
-##Now test a for loop to pull in multipl dates and bind them together
-```{r}
+##Now test a for loop to pull in multiple dates and bind them together
+
+For loop ran in the server to free up memory on my computer.
+
+```{r, eval = F}
 DatesData <- read.csv("Dates To Scrape.csv")
 DatesData$Date <- mdy(DatesData$Date)
 URLData <- read.csv("Links to stats to scrape.csv")
@@ -63,25 +66,101 @@ URLData$URL <- paste0(URLData$URL, "?date=")
 #DatesData <- DatesData[1:10,]
 #URLData <- URLData[1:2,]
 
-df.tib <- as.tibble()
-for(i in 1:dim(URLData)[1]){
-  url <- paste0(URLData$URL[i])
-  url.df <- as.tibble()
-  for(j in 1:dim(DatesData)[1]){
-    url2 <- paste0(url, DatesData$Date[j])
-    Lines <- readLines(url2)
-    Lines.tib <- as.tibble(Lines)
-    Lines.text <- Lines.tib[1739:2055,]
-    schedule.team <- htmltab(Lines.text[[1]], which =1, rm_nodata_cols = F)
-    schedule.team <- schedule.team %>% 
-      mutate(Date = DatesData$Date[j])
-    
-    url.df <- bind_rows(url.df, schedule.team)
-  }
-  
-  df.tib <- bind_rows(df.tib, url.df)
-  
-}
+#df.tib2 <- as.tibble()
+#for(i in 1:dim(URLData)[1]){
+#  url <- paste0(URLData$URL[i])
+#  url.df <- as.tibble()
+#  stats <- paste0(URLData$Stat[i])
+#  
+#  for(j in 1:dim(DatesData)[1]){
+#    url2 <- paste0(url, DatesData$Date[j])
+#    Lines <- readLines(url2)
+#    Lines.tib <- as.tibble(Lines)
+#    Lines.text <- Lines.tib[1739:2055,]
+#    schedule.team <- htmltab(Lines.text[[1]],  rm_nodata_cols = F)
+#    schedule.team <- schedule.team %>% 
+#      mutate(Date = DatesData$Date[j]) %>% 
+#      mutate(Stats = stats)
+#    
+#    names(schedule.team)[3] <- "YTD"
+#    names(schedule.team)[8] <- "LastYear"
+#    head(schedule.team, 2)
+#    url.df <- bind_rows(url.df, schedule.team)
+#  }
+#  
+#  df.tib <- bind_rows(df.tib, url.df)
+#  
+#}
+#
+#        write.csv(df.tib, "statsonstats.csv")
+```
+
+
+##Clean the data and join it to the current games
+
+```{r}
+HistOdds <- NBAOdds20072018Update
+df.tib <- schedule.team
+
+HistOdds <- HistOdds %>% 
+  filter(Date >= "2015-10-28") %>% 
+  select(-X1)
+
+#df.tib <- df.tib[, c(3, 4, 5, 6, 7, 8, 9, 10)]
+
+df.tib$Team[df.tib$Team == "Detroit"] <- "Detroit Pistons"
+df.tib$Team[df.tib$Team == "Atlanta"] <- "Atlanta Hawks"
+df.tib$Team[df.tib$Team == "Boston"] <- "Boston Celtics"
+df.tib$Team[df.tib$Team == "Brooklyn"] <- "Brooklyn Nets"
+df.tib$Team[df.tib$Team == "Charlotte"] <- "Charlotte Hornets"
+df.tib$Team[df.tib$Team == "Chicago"] <- "Chicago Bulls"
+df.tib$Team[df.tib$Team == "Cleveland"] <- "Cleveland Cavaliers"
+df.tib$Team[df.tib$Team == "Dallas"] <- "Dallas Mavericks"
+df.tib$Team[df.tib$Team == "Denver"] <- "Denver Nuggets"
+df.tib$Team[df.tib$Team == "Detroit"] <- "Detroit Pistons"
+df.tib$Team[df.tib$Team == "Golden State"] <- "Golden State Warriors"
+df.tib$Team[df.tib$Team == "Houston"] <- "Houston Rockets"
+df.tib$Team[df.tib$Team == "Indiana"] <- "Indiana Pacers"
+df.tib$Team[df.tib$Team == "LA Clippers"] <- "Los Angeles Clippers"
+df.tib$Team[df.tib$Team == "LA Lakers"] <- "Los Angeles Lakers"
+df.tib$Team[df.tib$Team == "Memphis"] <- "Memphis Grizzlies"
+df.tib$Team[df.tib$Team == "Miami"] <- "Miami Heat"
+df.tib$Team[df.tib$Team == "Milwaukee"] <- "Milwaukee Bucks"
+df.tib$Team[df.tib$Team == "Minnesota"] <- "Minnesota Timberwolves"
+df.tib$Team[df.tib$Team == "New Orleans"] <- "New Orleans Pelicans"
+df.tib$Team[df.tib$Team == "New York"] <- "New York Knicks"
+df.tib$Team[df.tib$Team == "Okla City"] <- "Oklahoma City Thunder"
+df.tib$Team[df.tib$Team == "Orlando"] <- "Orlando Magic"
+df.tib$Team[df.tib$Team == "Philadelphia"] <- "Philadelphia 76ers"
+df.tib$Team[df.tib$Team == "Phoenix"] <- "Phoenix Suns"
+df.tib$Team[df.tib$Team == "Portland"] <- "Portland Trail Blazers"
+df.tib$Team[df.tib$Team == "Sacramento"] <- "Sacramento Kings"
+df.tib$Team[df.tib$Team == "San Antonio"] <- "San Antonio Spurs"
+df.tib$Team[df.tib$Team == "Toronto"] <- "Toronto Raptors"
+df.tib$Team[df.tib$Team == "Utah"] <- "Utah Jazz"
+df.tib$Team[df.tib$Team == "Washington"] <- "Washington Wizards"
+
+names(df.tib)[names(df.tib) == "Last 3"] <- "Last3"
+names(df.tib)[names(df.tib) == "Home"] <- "H"
+names(df.tib)[names(df.tib) == "Team"] <- "Home"
+names(df.tib)[names(df.tib) == "2017"] <- "YTD"
+names(df.tib)[names(df.tib) == "2016"] <- "LastYear"
+df.tib$stat <- "Oeff"
+df.tib$Date <- "2017-10-18"
+df.tib$Date <- ymd(df.tib$Date)
+HistOdds <- as.data.frame(HistOdds)
+df.tib <- as.data.frame(df.tib)
+
+
+temp <- left_join(df.tib, HistOdds)
+names(df.tib)[names(df.tib) == "Home"] <- "Visitor"
+names(temp)[names(temp) == "Home"] <- "Team"
+temp2 <- left_join(temp, df.tib, by = c("Visitor", "Date"), suffix = c("H", "V"))
+head(temp2)
+
+head(HistOdds)
+head(df.tib)
+
 
 
 ```

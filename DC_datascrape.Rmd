@@ -177,8 +177,8 @@ get.playoffs <- function(year, type, table) {
     table <- htmltab(temp.text[[1]], which =1, rm_nodata_cols = F)
     names(table)[names(table) == "Visitor/Neutral"] <- "Away"
     names(table)[names(table) == "Home/Neutral"] <- "Home"
-    names(table)[names(table) == "PTS"] <- "PTS Away"
-    names(table)[names(table) == "PTS.1"] <- "PTS Home"
+    names(table)[4] <- "PTS AWAY"
+    names(table)[6] <- "PTS HOME"
     table <- table[,-7:-9]
   } else if ((type == "per_game") || (type == "advanced")) {
     urltable <- paste0(playoffs_url, year, "_", type, ".html&div=div_", table)
@@ -196,5 +196,38 @@ get.playoffs <- function(year, type, table) {
   }
   return(table)
 }
+
+```
+
+```{r}
+
+year.vect <- c("2018" ,"2017", "2016", "2015", "2014", "2013", "2012", "2011", "2010", "2009", "2008")
+
+StatsOvertime <- function(variable){
+  l <- enquo(variable)
+  df.out <- as.tibble()
+  for(i in 1:10){
+  Season <- get.season(year.vect[i], "team-stats-per_game") %>%
+    mutate(Varss = as.numeric(as.character(!!l))) %>%
+    summarise(Avg = mean(Varss)) %>%
+    mutate(Year = year.vect[i])
+  df.out <- bind_rows(df.out, Season)
+  }
+  
+return(df.out)
+}
+
+OverTime(PTS)
+
+Season <- get.season("2018", "team-stats-per_game") %>%
+    mutate_("Varss" = as.numeric(as.character("PTS"))) %>%
+    summarise_("Avg" = mean("Varss", na.rm = T))
+
+```
+
+dplyr function that matches title, airline example to match delay
+
+```{r}
+get.team("BOS", "2017", "team-stats-per_game")
 
 ```
