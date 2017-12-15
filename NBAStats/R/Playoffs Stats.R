@@ -1,7 +1,7 @@
 playoffs_url<-"https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fplayoffs%2FNBA_"
 
 get.playoffs <- function(year, table_code, type = "") {
-    if (table_code < 12 || table_code >18) {
+    if (table_code < 12 || table_code > 18) {
       print("Please enter a valid numeric value for playoffs table code")
       break
     } else {
