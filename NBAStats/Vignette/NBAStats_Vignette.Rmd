@@ -40,7 +40,7 @@ For picture examples of what each section in the glossary maps to on the website
 "Heading" can be seen on the home page such as "Teams" or "Playoffs". See example:
 ![Heading example from website](Images/NBA picture.PNG)
 
-Subsections, can be selected from a particular heading, such as the "franchise" the Boston Celtics. See example:
+Subsections, can be selected from a particular heading, such as the franchise the "Boston Celtics". See example:
 ![Subheading example from website](Images/Franchise page.PNG)
 
 Lastly, the list of statistic tables avilable which are pulled directly from the website. See example:
