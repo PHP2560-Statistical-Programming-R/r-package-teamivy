@@ -28,8 +28,8 @@ ui <- fluidPage(
    sidebarLayout(
       sidebarPanel(
         conditionalPanel(condition="input.tabselected ==1",
-                         h3("Season Table"),
-                         selectInput("STteam",
+                         h3("Team Schedule"),
+                         selectInput("TSteam",
                                      "Choose a team:", 
                                      c("Atlanta Hawks" = "ATL", 
                                        "Boston Celtics" = "BOS",
@@ -67,8 +67,7 @@ ui <- fluidPage(
                                        "Utah Jazz" = "UTA",
                                        "Washington Wizards" = "WAS",
                                        selectize = TRUE)),
-                         #selectInput("STstat", "Select a statistic"),
-                         selectInput("STyear", "Select a year",
+                         selectInput("TSyear", "Select a year",
                                      choices = 2008:2018)
         ),
         
@@ -234,13 +233,12 @@ ui <- fluidPage(
         
         ),
       
-      
       # Show a plot of the generated distribution
       mainPanel(
         tabsetPanel(
-                    tabPanel("Season Table", 
+                    tabPanel("Team Schedule", 
                              value=1,
-                             verbatimTextOutput("teamSummary")),
+                             tableOutput("tSchedule")),
                     tabPanel("Season Plot",
                              value=2,
                              plotOutput("usMap")),
@@ -306,6 +304,11 @@ server <- function(input, output) {
    output$match <- renderTable({
      match <- GetLastMatchups(input$Mteam1, input$Mteam2, input$Mnumber)
      match
+   })
+   
+   output$tSchedule <- renderTable({
+     team <- GetTeamSchedule.shiny(input$TSteam,input$TSyear)
+     head(team)
    })
 }
 
