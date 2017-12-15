@@ -2,12 +2,14 @@ url <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagu
 year <- "2018"
 element <- "team-stats-per_game"
 
+element <- dataframe %>%
+  filter(tablecode == element) %>%
+  select(CSSselector)
+
 get.season <- function(year, element){
-  element <- dataframe %>%
-    filter(tablecode == element) %>%
-    select(CSSselector)
+
   urltable <- paste0(url, year, ".html&div=div_", element)
-  
+
   playoffspage <- readLines(urltable)
   playoffs.tib <- as.tibble(playoffspage)
   temp.text <- playoffs.tib[104,] #This stores as a list

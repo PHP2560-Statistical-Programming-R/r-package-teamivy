@@ -244,13 +244,13 @@ ui <- fluidPage(
                              verbatimTextOutput("oddsum")),
                     tabPanel("Playoff Plot",
                              value=4,
-                             tableOutput("playoff")),
+                             tableOutput("playoff2")),
                     tabPanel("Matchups",
                              value=5,
-                             tableOutput("playoff")),
+                             tableOutput("playoff3")),
                     tabPanel("Betting",
                              value=6,
-                             tableOutput("playoff")),
+                             tableOutput("playoff4")),
                     id = "tabselected"
         )
       )
