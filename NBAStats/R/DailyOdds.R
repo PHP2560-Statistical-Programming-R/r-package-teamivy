@@ -1,12 +1,11 @@
 ##This function strips the daily betting odds
-DailyOdds <- function(BettingDate2 = lubridate::today()){
-
+DailyOdds <- function(BettingDate2 = "2017-12-15"){
+  BettingDate2 <- as.Date(BettingDate2)
   BettingDate <- format(BettingDate2, "%Y%m%d")
 
-  if(ymd(BettingDate2) > today() +1) {
+  if(ymd(BettingDate) > today() +1) {
     print("Sorry, the betting lines are not set yet! Lines are only released for today and the following day. Check back again!")
   } else {
-    BettingDate <- format(BettingDate2, format = "%Y%m%d")
     ##Spreads Tables
     url.spread <- paste0("http://www.donbest.com/nba/odds/spreads/", BettingDate, ".html")
 
