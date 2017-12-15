@@ -42,7 +42,7 @@ A list of our functions include:
 
 
 A glossary of the the statistics that are available here:
-https://docs.google.com/spreadsheets/d/1TlsKr_mAhdhPn4hHUFHKRyVnVLpAuTW7LVbc1eKcjKc/edit?usp=sharing
+[Glossary](https://docs.google.com/spreadsheets/d/1TlsKr_mAhdhPn4hHUFHKRyVnVLpAuTW7LVbc1eKcjKc/edit?usp=sharing)
 
 For picture examples of what each section in the glossary maps to on the website see the following sections below:
 
