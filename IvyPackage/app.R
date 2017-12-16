@@ -99,7 +99,7 @@ ui <- fluidPage(
                         "Blocks" = "BLK",
                         "Turnovers" = "TOV",
                         "Personal Fouls" = "PF",
-                        "Points" = "PTS")),
+                        "Points" = "PTS"), selectize = TRUE, selected = "AST"),
           h4("________________"),
           dateInput("SPmap","Plot all scheduled games by date",
                     value = "2017-12-18")
