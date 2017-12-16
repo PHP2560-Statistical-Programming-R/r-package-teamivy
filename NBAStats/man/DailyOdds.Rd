@@ -4,7 +4,7 @@
 \description{This function webscrapes the NBA betting lines from three different markets. It also calculates a win probability based on the Pinnacle lines.}
 \usage{DailyOdds(x)}
 \arguments{
-  \item{x}{The date entered as "YYYYMMDD"}
+  \item{x}{The date entered as "YYYY-MM-DD"}
 }
 \value{
   \item{df}{A data frame with the games and odds for that day is returned.}
@@ -14,7 +14,7 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-DailyOdds("20171206")
+DailyOdds("2017-12-06")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
