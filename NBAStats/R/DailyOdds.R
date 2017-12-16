@@ -253,8 +253,7 @@ DailyOdds <- function(BettingDate2){
                             PinnacleAwayML/(PinnacleAwayML -100)),
              WP.H = (WP.HB + (1-WP.VB))/2,
              WP.V = 1 - WP.H)  %>%
-      select(-WP.HB, -WP.VB) %>%
-      mutate(Date = lubridate::ymd(BettingDate))
+      select(-WP.HB, -WP.VB)
     return(BettingTable)
   }
 
