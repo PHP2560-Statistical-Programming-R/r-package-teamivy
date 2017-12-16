@@ -18,6 +18,7 @@ library(xml2)
 library(NBAStats)
 
 options(shiny.sanitize.errors = FALSE)
+Glossary <- read.csv("glossary.csv")
 # Define UI for application that draws a histogram
 ui <- fluidPage(
    
@@ -241,7 +242,7 @@ ui <- fluidPage(
                         "Toronto Raptors" = "TOR",
                         "Utah Jazz" = "UTA",
                         "Washington Wizards" = "WAS"
-                        ), selectize = TRUE),
+                        ), selectize = TRUE, selected = "BOS"),
           numericInput("Mnumber", "Input a Number",
                        value=4)
         ),
