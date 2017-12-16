@@ -290,10 +290,10 @@ server <- function(input, output) {
 
   #Betting Odds 
    output$odds <- renderTable({
-     odds <- DailyOdds(input$Bday)
-     odds
+     odds <- DailyOdds(input$Bdate)
    })
    
+   #playoff plot 
    output$plot <- renderPlot({
      stat_plot(input$PPyear, 13, input$PPstat)
 

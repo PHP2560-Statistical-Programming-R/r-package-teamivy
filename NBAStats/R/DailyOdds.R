@@ -1,5 +1,5 @@
 ##This function strips the daily betting odds
-DailyOdds <- function(BettingDate2 = "2017-12-15"){
+DailyOdds <- function(BettingDate2){
   BettingDate2 <- as.Date(BettingDate2)
   BettingDate <- format(BettingDate2, "%Y%m%d")
 
