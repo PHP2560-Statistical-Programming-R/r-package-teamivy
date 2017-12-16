@@ -25,7 +25,7 @@ ui <- fluidPage(
    # Application title
    titlePanel("NBA Stats"),
    
-   # Sidebar with a slider input for number of bins 
+   # develop conditional panels & tabs, keeping track of tab ids 
    sidebarLayout(
       sidebarPanel(
         conditionalPanel(condition="input.tabselected ==1",
@@ -255,8 +255,7 @@ ui <- fluidPage(
                     tabPanel("Betting",
                              value=6,
                              tableOutput("odds")),
-                    id = "tabselected"
-        )
+                    id = "tabselected") #to be used with the conditional tabs 
       )
 ))
       
@@ -265,7 +264,6 @@ ui <- fluidPage(
 
 
 
-# Define server logic required to draw a histogram
 server <- function(input, output) {
 
   #Betting Odds 
