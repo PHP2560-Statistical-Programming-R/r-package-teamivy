@@ -26,3 +26,4 @@ Depends:
   ggplot2 (>= 2.2.1),
   maps (>= 3.2),
   ggrepel (>= 0.7)
+  ggmap (>= 2.6.1)
