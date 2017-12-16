@@ -4,11 +4,6 @@ caphistoryurl <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&ur
 contract_url <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fcontracts%2F"
 
 get.team <- function(team, year, table_code){
-  if(str_length(Team2) == 3){
-    team <- AbbrevToNames(team)
-  } else {
-    team <- team
-  }
 
   if (table_code < 4 || table_code > 11) {
     print("Please enter a valid numeric value for teams table code")
