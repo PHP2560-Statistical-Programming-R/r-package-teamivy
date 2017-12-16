@@ -4,7 +4,7 @@ LeagueStats <- function(variable){
     l <- enquo(variable)
     df.out <- as.tibble()
     for(i in 1:10){
-      Season <- get.season(year.vect[i], "team-stats-per_game") %>%
+      Season <- get.season(year.vect[i]) %>%
         mutate(Varss = as.numeric(as.character(!!l))) %>%
         summarise(Avg = mean(Varss)) %>%
         mutate(Year = year.vect[i])
