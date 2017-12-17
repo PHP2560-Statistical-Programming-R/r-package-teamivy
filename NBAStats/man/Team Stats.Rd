@@ -1,46 +1,23 @@
 \name{Team Stats}
 \alias{Team Stats}
-%- Also NEED an '\alias' for EACH other topic documented here.
+
 \title{
-Get the stats for a given team
+Get any stat for any team of any year
 }
 \description{
-Creates a table with desired regular season NBA statistic from the past 10 years.%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Creates a table with desired regular season NBA statistic from the past 10 years.
 }
 \usage{
-Team Stats(team, year, element)
+Team Stats(team, year, table_code)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{team}{a character value. Three letter abbreviation of the team name.}
   \item{year}{a character value. The year of the of the data table.}
-  \item{element}{a character value. The content of the data table.}
+  \item{table_code}{a numeric value. Reference code to the content of the data table that will be extracted.}
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
-}
-\value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
-}
-\author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+Table codes for this function should be between the values 4 to 11. Refer to glossary for more details.
 }
 \examples{
-get.team("CLE", "2015", "contracts")
+get.team("SAS", "2015", 5)
 }

@@ -1,3 +1,4 @@
+
 season_plot <- function(year, col_name){
 
   table <- get.season(year)
