@@ -1,3 +1,4 @@
+#stores the url for the table that is being scraped
 url <- "https://widgets.sports-reference.com/wg.fcgi?css=1&site=bbr&url=%2Fleagues%2FNBA_"
 
 get.season <- function(year){
