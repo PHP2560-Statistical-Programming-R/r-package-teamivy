@@ -8,7 +8,6 @@
 #
 
 library(shiny)
-library(tidyverse)
 library(rvest)
 library(pipeR)
 library(XML)
@@ -21,18 +20,18 @@ options(shiny.sanitize.errors = FALSE)
 Glossary <- read.csv("glossary.csv")
 # Define UI for application that draws a histogram
 ui <- fluidPage(
-   
+
    # Application title
    titlePanel("NBA Stats"),
-   
-   # develop conditional panels & tabs, keeping track of tab ids 
+
+   # develop conditional panels & tabs, keeping track of tab ids
    sidebarLayout(
       sidebarPanel(
         conditionalPanel(condition="input.tabselected ==1",
                          h3("Team Schedule"),
                          selectInput("TSteam",
-                                     "Choose a team:", 
-                                     c("Atlanta Hawks" = "ATL", 
+                                     "Choose a team:",
+                                     c("Atlanta Hawks" = "ATL",
                                        "Boston Celtics" = "BOS",
                                        "Brooklyn Nets" = "BRK",
                                        "New Jersey Nets" = "NJN",
@@ -71,7 +70,7 @@ ui <- fluidPage(
                          selectInput("TSyear", "Select a year",
                                      choices = 2008:2018)
         ),
-        
+
         conditionalPanel(condition="input.tabselected ==2",
           h3("Season Plot"),
           selectInput("SPYear", "Choose a Year:",
@@ -104,14 +103,14 @@ ui <- fluidPage(
           dateInput("SPmap","Plot all scheduled games by date",
                     value = "2017-12-18")
           ),
-        
-        
+
+
         conditionalPanel(condition="input.tabselected ==3",
           h3("Standings"),
           selectInput("sYear", "Select a year",
                       choices = 2008:2018)
           ),
-        
+
         conditionalPanel(condition="input.tabselected ==4",
           h3("Playoffs Stats per Game"),
           selectInput("PPyear", "Select a year",
@@ -141,14 +140,14 @@ ui <- fluidPage(
                         "Personal Fouls" = "PF",
                         "Points" = "PTS")),
           helpText("The red dotted line represents the league average per stat.")
-        
-         ), 
-        
+
+         ),
+
         conditionalPanel(condition="input.tabselected ==5",
           h3("Previous Matchups"),
           selectInput("Mteam1",
-                      "First Team", 
-                      c("Atlanta Hawks" = "ATL", 
+                      "First Team",
+                      c("Atlanta Hawks" = "ATL",
                         "Boston Celtics" = "BOS",
                         "Brooklyn Nets" = "BRK",
                         "New Jersey Nets" = "NJN",
@@ -184,8 +183,8 @@ ui <- fluidPage(
                         "Utah Jazz" = "UTA",
                         "Washington Wizards" = "WAS"), selectize = TRUE),
           selectInput("Mteam2",
-                      "Second Team", 
-                      c("Atlanta Hawks" = "ATL", 
+                      "Second Team",
+                      c("Atlanta Hawks" = "ATL",
                         "Boston Celtics" = "BOS",
                         "Brooklyn Nets" = "BRK",
                         "New Jersey Nets" = "NJN",
@@ -224,19 +223,19 @@ ui <- fluidPage(
           numericInput("Mnumber", "Input a Number",
                        value=4)
         ),
-        
+
         conditionalPanel(condition="input.tabselected ==6",
                          h3("Betting"),
                          dateInput("Bdate", "Choose a date",
                                    value="2017-11-02")
         )
-        
+
         ),
-      
+
       # Show a plot of the generated distribution
       mainPanel(
         tabsetPanel(
-                    tabPanel("Team Schedule", 
+                    tabPanel("Team Schedule",
                              value=1,
                              dataTableOutput("tSchedule")),
                     tabPanel("Season Plot",
@@ -255,10 +254,10 @@ ui <- fluidPage(
                     tabPanel("Betting",
                              value=6,
                              tableOutput("odds")),
-                    id = "tabselected") #to be used with the conditional tabs 
+                    id = "tabselected") #to be used with the conditional tabs
       )
 ))
-      
+
 
 
 
@@ -266,48 +265,48 @@ ui <- fluidPage(
 
 server <- function(input, output) {
 
-  #Betting Odds 
+  #Betting Odds
    output$odds <- renderTable({
      odds <- DailyOdds(input$Bdate)
    })
-   
-   #playoff plot 
+
+   #playoff plot
    output$plot <- renderPlot({
      stat_plot(input$PPyear, 13, input$PPstat)
 
    })
-   
+
    #season plot
    output$season <- renderPlot({
      season_plot(input$SPYear, input$SPstat)
    })
 
-   
-   
+
+
    #standings
    output$standings <- renderDataTable({
      standings <- webscrape_standings(input$sYear)
      standings
    })
-   
-   #second piece of playoff plot, game location  
+
+   #second piece of playoff plot, game location
    output$usMap <- renderPlot({
      schedule_map(input$SPmap)
    })
-   
-   #matchups 
+
+   #matchups
    output$match <- renderTable({
      match <- GetLastMatchups(input$Mteam1, input$Mteam2, input$Mnumber)
      match
    })
-   
-   #team schedule 
+
+   #team schedule
    output$tSchedule <- renderDataTable({
      team <- GetTeamSchedule.shiny(input$TSteam,input$TSyear)
    })
 }
 
 
-# Run the application 
+# Run the application
 shinyApp(ui = ui, server = server)
 
