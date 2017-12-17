@@ -8,7 +8,6 @@
 #
 
 library(shiny)
-library(tidyverse)
 library(rvest)
 library(pipeR)
 library(XML)
